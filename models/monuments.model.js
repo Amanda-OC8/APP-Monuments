@@ -13,11 +13,7 @@ const monumentSchema = new Schema({
         postalCode: Number,
         street: String
     },
-    location: {
-        type: String,
-        latitude: Number,
-        longitude: Number
-    },
+    location: { type: { type: String }, coordinates: [Number] },
     references: String,
     // activities: [{
     //     type: Schema.Type.ObjectId,
@@ -27,6 +23,7 @@ const monumentSchema = new Schema({
 }, {
     timestamps: true
 })
+monumentSchema.index({ location: '2dsphere' })
 
 const Monument = mongoose.model("Monument", monumentSchema)
 

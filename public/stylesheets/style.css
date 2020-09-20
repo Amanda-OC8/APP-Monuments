@@ -7,6 +7,12 @@ h1, h2, h3 {
 .navbar {
   margin-bottom: 70px; }
 
+.form-num {
+  width: 50px;
+  border: none;
+  padding: auto 10px;
+  text-align: center; }
+
 #errorMsg {
   background-color: red;
   color: white;

@@ -3,11 +3,17 @@ const Schema = mongoose.Schema
 
 const activitySchema = new Schema({
     name: String,
-    type: {
+    actType: {
         type: String,
         enum: ["Busqueda", "Carrera", "Pistas", "Trivial"]
     },
-    description: String
+    shortDescription: String,
+    longDescription: String,
+    minParticipants: Number,
+    maxParticipants: Number,
+    minAge: Number,
+    maxAge: Number,
+    materials: [String]
 }, {
     timestamps: true
 })

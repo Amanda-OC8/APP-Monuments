@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Activity = require('../models/activity.model')
-const Monument = require('../models/monument.model')
+const Monument = require('../models/monuments.model')
 const User = require("../models/user.model")
 
 const dbtitle = 'Monumentos-Madrid'
@@ -13,33 +13,61 @@ User.collection.drop()
 const activities = [
     {
         name: "Encuentra el objeto",
-        type: "Búsqueda",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus."
+        actType: "Busqueda",
+        shortDescription: "Lorem ipsum dolor sit amet.",
+        longDescription: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus.",
+        minParticipants: 5,
+        maxParticipants: 10,
+        minAge: 7,
+        maxAge: 15,
+        materials: ["Papel", "Bolis", "Objeto"]
     },
     {
         name: "Mide el edificio",
-        type: "Carrera",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus."
+        actType: "Carrera",
+        shortDescription: "Lorem ipsum dolor sit amet.",
+        longDescription: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus.",
+        minParticipants: 8,
+        maxParticipants: 20,
+        minAge: 7,
+        maxAge: 15
     },
     {
         name: "Resuelve el misterio",
-        type: "Pistas",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus."
+        actType: "Pistas",
+        shortDescription: "Lorem ipsum dolor sit amet.",
+        longDescription: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus.",
+        minParticipants: 5,
+        maxParticipants: 10,
+        minAge: 7,
+        maxAge: 10,
+        materials: ["Papel", "Bolis"]
     },
     {
         name: "¿Sabes la historia?",
-        type: "Trivial",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus."
+        actType: "Trivial",
+        shortDescription: "Lorem ipsum dolor sit amet.",
+        longDescription: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus.",
+        minParticipants: 4,
+        maxParticipants: 16,
+        minAge: 12,
+        maxAge: 14,
+        materials: ["Tarjetas", "Gomets"]
     },
     {
         name: "Descubre la historia oculta",
-        type: "Pistas",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus."
+        actType: "Pistas",
+        shortDescription: "Lorem ipsum dolor sit amet.",
+        longDescription: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ab modi ratione mollitia facilis corporis labore fuga excepturi architecto reprehenderit non minima cum sit eos quisquam, deserunt, enim rerum accusamus.",
+        minParticipants: 5,
+        maxParticipants: 10,
+        minAge: 20,
+        maxAge: 35,
+        materials: ["Papel", "Bolis"]
     }
 ]
 
 const monuments = [
-
     {
         jsonURL: "https://datos.madrid.es/egob/catalogo/tipo/edificio/302283-almacenes-rodriguez.json",
         originID: 302283,
@@ -54,8 +82,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419716000547446,
-            longitude: -3.700924275126349
+            coordinates: [40.419716000547446, -3.700924275126349]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302283.pdf?idEdificio=0b08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -73,8 +100,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.449487715157105,
-            longitude: -3.5846718811400415
+            coordinates: [40.449487715157105, -3.5846718811400415]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11072416.pdf?idEdificio=aae94d07192ae610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -92,8 +118,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41539811494639,
-            longitude: -3.698368894119228
+            coordinates: [40.41539811494639, -3.698368894119228]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/303994.pdf?idEdificio=4218f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -112,8 +137,7 @@ const monuments = [
         location: {
             type: "Point"
             ,
-            latitude: 40.417345829900306,
-            longitude: -3.69956773930541
+            coordinates: [40.417345829900306, -3.69956773930541]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302440.pdf?idEdificio=2e08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -131,8 +155,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.418075647306665,
-            longitude: -3.6950725920539
+            coordinates: [40.418075647306665, -3.6950725920539]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325808.pdf?idEdificio=2228f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -150,8 +173,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42015262123508,
-            longitude: -3.7002333412022166
+            coordinates: [40.42015262123508, -3.7002333412022166]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302279.pdf?idEdificio=8a08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -169,8 +191,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41420531493721,
-            longitude: -3.7096614825254437
+            coordinates: [40.41420531493721, -3.7096614825254437]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307083.pdf?idEdificio=e518f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -188,8 +209,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43267260040589,
-            longitude: -3.731936574991669
+            coordinates: [40.43267260040589, -3.731936574991669]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11071963.pdf?idEdificio=131c28649e1ae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -207,8 +227,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.38188230129181,
-            longitude: -3.7106157111470615
+            coordinates: [40.38188230129181, -3.7106157111470615]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11073375.pdf?idEdificio=e7daf2ef5c6ae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -226,8 +245,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.416869058196646,
-            longitude: -3.6921641190883117
+            coordinates: [40.416869058196646, -3.6921641190883117]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/317685.pdf?idEdificio=8d18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -245,8 +263,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41100296472787,
-            longitude: -3.6933720637143432
+            coordinates: [40.41100296472787, -3.6933720637143432]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/380003.pdf?idEdificio=c428f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -264,8 +281,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41208167798535,
-            longitude: -3.710809418427343
+            coordinates: [40.41208167798535, -3.710809418427343]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/303549.pdf?idEdificio=00083d43db3a45103d43db3a45102e085a0aRCRD&tipoMon=E"
     },
@@ -283,8 +299,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42175951375861,
-            longitude: -3.6821165450977644
+            coordinates: [40.42175951375861, -3.6821165450977644]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/316140.pdf?idEdificio=ac18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -302,8 +317,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41519930383812,
-            longitude: -3.7106114421853977
+            coordinates: [40.41519930383812, -3.7106114421853977]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302902.pdf?idEdificio=4f08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -321,8 +335,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.418158551935534,
-            longitude: -3.7069590771872307
+            coordinates: [40.418158551935534, -3.7069590771872307]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307084.pdf?idEdificio=0618f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -340,8 +353,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43200253545766,
-            longitude: -3.7165599011833264
+            coordinates: [40.43200253545766, -3.7165599011833264]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/309418.pdf?idEdificio=e818f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -359,8 +371,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41918184340614,
-            longitude: -3.696887446468761
+            coordinates: [40.41918184340614, -3.696887446468761]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302349.pdf?idEdificio=8c08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -378,8 +389,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41373002816207,
-            longitude: -3.6940288616186012
+            coordinates: [40.41373002816207, -3.6940288616186012]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11015835.pdf?idEdificio=9b48062df152d610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -397,8 +407,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41777541448619,
-            longitude: -3.7002800119895505
+            coordinates: [40.41777541448619, -3.7002800119895505]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302404.pdf?idEdificio=6d08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -416,8 +425,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.52371356289907,
-            longitude: -3.7793722663684637
+            coordinates: [40.52371356289907, -3.7793722663684637]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11067311.pdf?idEdificio=8ccfa8071288e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -435,8 +443,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42662313663575,
-            longitude: -3.6461555750010706
+            coordinates: [40.42662313663575, -3.6461555750010706]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11072237.pdf?idEdificio=b1300183252ae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -454,8 +461,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40400482713434,
-            longitude: -3.6744688233892404
+            coordinates: [40.40400482713434, -3.6744688233892404]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11075282.pdf?idEdificio=b32ecef22dcae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -473,8 +479,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40180567689773,
-            longitude: -3.6771876805396864
+            coordinates: [40.40180567689773, -3.6771876805396864]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11075326.pdf?idEdificio=b4c3cef22dcae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -492,8 +497,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.408827275648434,
-            longitude: -3.7083241323093614
+            coordinates: [40.408827275648434, -3.7083241323093614]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/305459.pdf?idEdificio=0418f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -511,8 +515,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419523741055684,
-            longitude: -3.699943922067412
+            coordinates: [40.419523741055684, -3.699943922067412]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302286.pdf?idEdificio=4b08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -530,8 +533,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419924992685935,
-            longitude: -3.7050756479788833
+            coordinates: [40.419924992685935, -3.7050756479788833]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302169.pdf?idEdificio=00083a2ae80a45103a2ae80a45102e085a0aRCRD&tipoMon=E"
     },
@@ -549,8 +551,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419980785676174,
-            longitude: -3.706266769929261
+            coordinates: [40.419980785676174, -3.706266769929261]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302112.pdf?idEdificio=e608f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -568,8 +569,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42256029007748,
-            longitude: -3.7087338575144777
+            coordinates: [40.42256029007748, -3.7087338575144777]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302063.pdf?idEdificio=0508f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -587,8 +587,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41817509525873,
-            longitude: -3.69651165491942
+            coordinates: [40.41817509525873, -3.69651165491942]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307308.pdf?idEdificio=a718f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -606,8 +605,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42026644620261,
-            longitude: -3.700776749697362
+            coordinates: [40.42026644620261, -3.700776749697362]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307324.pdf?idEdificio=8818f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -624,8 +622,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.458171418103674,
-            longitude: -3.7254416045474374
+            coordinates: [40.458171418103674, -3.7254416045474374]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11072157.pdf?idEdificio=185b0183252ae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -643,8 +640,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42809511698824,
-            longitude: -3.679715364244469
+            coordinates: [40.42809511698824, -3.679715364244469]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325526.pdf?idEdificio=2128f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -662,8 +658,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43853583084271,
-            longitude: -3.7252915757655174
+            coordinates: [40.43853583084271, -3.7252915757655174]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11071873.pdf?idEdificio=a1371521c50ae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -681,8 +676,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42828467450708,
-            longitude: -3.6811529345648615
+            coordinates: [40.42828467450708, -3.6811529345648615]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/313893.pdf?idEdificio=cb18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -700,8 +694,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42408121377881,
-            longitude: -3.6984906424295754
+            coordinates: [40.42408121377881, -3.6984906424295754]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11071277.pdf?idEdificio=f3d5a9662229e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -719,8 +712,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.399909791771385,
-            longitude: -3.690036015115312
+            coordinates: [40.399909791771385, -3.690036015115312]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11075132.pdf?idEdificio=800b53f66bcae610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -738,8 +730,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41641794374934,
-            longitude: -3.6965760428685828
+            coordinates: [40.41641794374934, -3.6965760428685828]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/304017.pdf?idEdificio=6218f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -757,8 +748,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42740150087395,
-            longitude: -3.708938288104488
+            coordinates: [40.42740150087395, -3.708938288104488]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/300323.pdf?idEdificio=2108f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -776,8 +766,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.427509974454416,
-            longitude: -3.711061057617866
+            coordinates: [40.427509974454416, -3.711061057617866]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325348.pdf?idEdificio=6028f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -795,8 +784,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43071965314907,
-            longitude: -3.68950836611669
+            coordinates: [40.43071965314907, -3.68950836611669]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11053543.pdf?idEdificio=b8df078f64c1e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -814,8 +802,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43420552208373,
-            longitude: -3.6878737998050686
+            coordinates: [40.43420552208373, -3.6878737998050686]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11055806.pdf?idEdificio=e686dfa16a63e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -833,8 +820,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42038314116203,
-            longitude: -3.706766056524687
+            coordinates: [40.42038314116203, -3.706766056524687]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302096.pdf?idEdificio=c608f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -852,8 +838,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4232376492877,
-            longitude: -3.7102689441860126
+            coordinates: [40.4232376492877, -3.7102689441860126]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302051.pdf?idEdificio=a308f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -871,8 +856,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41426942327938,
-            longitude: -3.696078069568077
+            coordinates: [40.41426942327938, -3.696078069568077]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11016735.pdf?idEdificio=3d4473b43552d610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -890,8 +874,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.422647917090806,
-            longitude: -3.709135568642842
+            coordinates: [40.422647917090806, -3.709135568642842]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302062.pdf?idEdificio=e408f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -909,8 +892,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41916316149634,
-            longitude: -3.698490337359729
+            coordinates: [40.41916316149634, -3.698490337359729]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302356.pdf?idEdificio=2d08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -928,8 +910,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42053455529419,
-            longitude: -3.7070505439234185
+            coordinates: [40.42053455529419, -3.7070505439234185]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302095.pdf?idEdificio=a608f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -947,8 +928,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.433285976618926,
-            longitude: -3.7164990134208717
+            coordinates: [40.433285976618926, -3.7164990134208717]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11017140.pdf?idEdificio=50e3ce908a92d610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -966,8 +946,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43092747841812,
-            longitude: -3.6846446338833183
+            coordinates: [40.43092747841812, -3.6846446338833183]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11050212.pdf?idEdificio=b7b887c41420e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -985,8 +964,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41935051716017,
-            longitude: -3.697301746425403
+            coordinates: [40.41935051716017, -3.697301746425403]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302343.pdf?idEdificio=4c08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1004,8 +982,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.420970348006776,
-            longitude: -3.706501085101446
+            coordinates: [40.420970348006776, -3.706501085101446]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302145.pdf?idEdificio=c708f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1023,8 +1000,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41999533487041,
-            longitude: -3.7053592829015223
+            coordinates: [40.41999533487041, -3.7053592829015223]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302168.pdf?idEdificio=a808f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1042,8 +1018,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.421972138578035,
-            longitude: -3.7091520478715996
+            coordinates: [40.421972138578035, -3.7091520478715996]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302072.pdf?idEdificio=8508f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1061,8 +1036,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.421747794773914,
-            longitude: -3.709008238044509
+            coordinates: [40.421747794773914, -3.709008238044509]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302073.pdf?idEdificio=a508f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1080,8 +1054,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.421533109617585,
-            longitude: -3.7087584404681806
+            coordinates: [40.421533109617585, -3.7087584404681806]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302074.pdf?idEdificio=c508f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1099,8 +1072,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41983067032157,
-            longitude: -3.7028114644082746
+            coordinates: [40.41983067032157, -3.7028114644082746]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302223.pdf?idEdificio=e908f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1118,8 +1090,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41871024079712,
-            longitude: -3.6974552127875446
+            coordinates: [40.41871024079712, -3.6974552127875446]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302425.pdf?idEdificio=ed08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1137,8 +1108,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41943002922452,
-            longitude: -3.6975618907685255
+            coordinates: [40.41943002922452, -3.6975618907685255]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302342.pdf?idEdificio=2c08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1156,8 +1126,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42141709585185,
-            longitude: -3.7071069351758537
+            coordinates: [40.42141709585185, -3.7071069351758537]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302125.pdf?idEdificio=4708f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1175,8 +1144,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42021381353114,
-            longitude: -3.702045729504309
+            coordinates: [40.42021381353114, -3.702045729504309]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302198.pdf?idEdificio=8908f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1194,8 +1162,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42222006385312,
-            longitude: -3.7083884373634293
+            coordinates: [40.42222006385312, -3.7083884373634293]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302070.pdf?idEdificio=4508f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1213,8 +1180,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42305180954051,
-            longitude: -3.71084907791347
+            coordinates: [40.42305180954051, -3.71084907791347]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302052.pdf?idEdificio=c308f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1232,8 +1198,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42280855064068,
-            longitude: -3.7093848037700505
+            coordinates: [40.42280855064068, -3.7093848037700505]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302061.pdf?idEdificio=c408f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1251,8 +1216,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42136433290127,
-            longitude: -3.7083676730256907
+            coordinates: [40.42136433290127, -3.7083676730256907]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302075.pdf?idEdificio=e508f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1270,8 +1234,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41556783900282,
-            longitude: -3.721135107165399
+            coordinates: [40.41556783900282, -3.721135107165399]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/300108.pdf?idEdificio=8008f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1289,8 +1252,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.425614559049066,
-            longitude: -3.7260819285571833
+            coordinates: [40.425614559049066, -3.7260819285571833]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11070491.pdf?idEdificio=26233c5e74a8e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -1308,8 +1270,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.38249753936885,
-            longitude: -3.752510480692841
+            coordinates: [40.38249753936885, -3.752510480692841]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/10999706.pdf?idEdificio=8662b8a28658c610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -1327,8 +1288,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40803440320469,
-            longitude: -3.703466938452617
+            coordinates: [40.40803440320469, -3.703466938452617]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307259.pdf?idEdificio=e618f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1346,8 +1306,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40792245547035,
-            longitude: -3.6923116993889704
+            coordinates: [40.40792245547035, -3.6923116993889704]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/318308.pdf?idEdificio=2f18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1365,8 +1324,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.434877495729964,
-            longitude: -3.696810843113834
+            coordinates: [40.434877495729964, -3.696810843113834]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11071839.pdf?idEdificio=bbc11521c50ae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -1384,8 +1342,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43122422239439,
-            longitude: -3.681123764267725
+            coordinates: [40.43122422239439, -3.681123764267725]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11050023.pdf?idEdificio=8245072df910e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -1403,8 +1360,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.44622182664542,
-            longitude: -3.6874505523727996
+            coordinates: [40.44622182664542, -3.6874505523727996]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11071302.pdf?idEdificio=f217a9662229e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -1422,8 +1378,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.420556700334984,
-            longitude: -3.7034201887922915
+            coordinates: [40.420556700334984, -3.7034201887922915]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302175.pdf?idEdificio=0908f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1440,8 +1395,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.478600170152276,
-            longitude: -3.7574669011672372
+            coordinates: [40.478600170152276, -3.7574669011672372]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11067396.pdf?idEdificio=71e5a8071288e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -1459,8 +1413,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.44539205139684,
-            longitude: -3.7011974227253477
+            coordinates: [40.44539205139684, -3.7011974227253477]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/310322.pdf?idEdificio=0918f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1478,8 +1431,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42050742476766,
-            longitude: -3.704115144651839
+            coordinates: [40.42050742476766, -3.704115144651839]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307316.pdf?idEdificio=e718f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1497,8 +1449,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42250707487777,
-            longitude: -3.710065338350866
+            coordinates: [40.42250707487777, -3.710065338350866]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302055.pdf?idEdificio=2408f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1516,8 +1467,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419762112038654,
-            longitude: -3.702233164302461
+            coordinates: [40.419762112038654, -3.702233164302461]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302227.pdf?idEdificio=0a08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1535,8 +1485,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42305832746606,
-            longitude: -3.7097882216017055
+            coordinates: [40.42305832746606, -3.7097882216017055]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302059.pdf?idEdificio=8408f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1554,8 +1503,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419718715992786,
-            longitude: -3.7019616011392307
+            coordinates: [40.419718715992786, -3.7019616011392307]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302228.pdf?idEdificio=2a08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1573,8 +1521,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.420900008680086,
-            longitude: -3.706217444920123
+            coordinates: [40.420900008680086, -3.706217444920123]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302144.pdf?idEdificio=a708f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1592,8 +1539,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41548099224374,
-            longitude: -3.6957733739936085
+            coordinates: [40.41548099224374, -3.6957733739936085]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/304046.pdf?idEdificio=a218f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1611,8 +1557,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.420038222989966,
-            longitude: -3.6997842288466742
+            coordinates: [40.420038222989966, -3.6997842288466742]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302281.pdf?idEdificio=ca08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1630,8 +1575,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42294237533695,
-            longitude: -3.7095983942507478
+            coordinates: [40.42294237533695, -3.7095983942507478]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302060.pdf?idEdificio=a408f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1649,8 +1593,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4206600249067,
-            longitude: -3.707157946297817
+            coordinates: [40.4206600249067, -3.707157946297817]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302094.pdf?idEdificio=8608f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1668,8 +1611,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41831315896514,
-            longitude: -3.699011971823613
+            coordinates: [40.41831315896514, -3.699011971823613]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302428.pdf?idEdificio=0e08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1687,8 +1629,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42248408139826,
-            longitude: -3.703510993080645
+            coordinates: [40.42248408139826, -3.703510993080645]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/301090.pdf?idEdificio=c108f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1706,8 +1647,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.414356517969345,
-            longitude: -3.690523026519969
+            coordinates: [40.414356517969345, -3.690523026519969]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/317886.pdf?idEdificio=6e18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1725,8 +1665,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41934499059586,
-            longitude: -3.696724106180927
+            coordinates: [40.41934499059586, -3.696724106180927]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302348.pdf?idEdificio=6c08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1744,8 +1683,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.420758796546075,
-            longitude: -3.68628303682986
+            coordinates: [40.420758796546075, -3.68628303682986]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/316121.pdf?idEdificio=8c18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1763,8 +1701,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.424769387928684,
-            longitude: -3.7111444272242124
+            coordinates: [40.424769387928684, -3.7111444272242124]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/300184.pdf?idEdificio=a008f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1782,8 +1719,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41324464343417,
-            longitude: -3.710250837641945
+            coordinates: [40.41324464343417, -3.710250837641945]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/303603.pdf?idEdificio=6118f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1801,8 +1737,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.405427281364965,
-            longitude: -3.6450041456114723
+            coordinates: [40.405427281364965, -3.6450041456114723]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11067036.pdf?idEdificio=7c29e5274b78e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -1820,8 +1755,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40926280409965,
-            longitude: -3.6953774471568273
+            coordinates: [40.40926280409965, -3.6953774471568273]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307123.pdf?idEdificio=4618f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1839,8 +1773,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41956034622228,
-            longitude: -3.6953707711467745
+            coordinates: [40.41956034622228, -3.6953707711467745]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307357.pdf?idEdificio=a818f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1858,8 +1791,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.44166668674646,
-            longitude: -3.735464796879181
+            coordinates: [40.44166668674646, -3.735464796879181]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11050966.pdf?idEdificio=f51b0a11f811e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -1877,8 +1809,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40596221830597,
-            longitude: -3.6997720739017033
+            coordinates: [40.40596221830597, -3.6997720739017033]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/305578.pdf?idEdificio=4418f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1896,8 +1827,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.39245798191536,
-            longitude: -3.6972067902718897
+            coordinates: [40.39245798191536, -3.6972067902718897]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11067567.pdf?idEdificio=55c478610b88e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -1915,8 +1845,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4105673503608,
-            longitude: -3.6937819843413373
+            coordinates: [40.4105673503608, -3.6937819843413373]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307124.pdf?idEdificio=6618f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1934,8 +1863,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4153602918824,
-            longitude: -3.709023692234164
+            coordinates: [40.4153602918824, -3.709023692234164]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307088.pdf?idEdificio=2618f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1953,8 +1881,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40863906624042,
-            longitude: -3.6906194489700237
+            coordinates: [40.40863906624042, -3.6906194489700237]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/317796.pdf?idEdificio=ed18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1972,8 +1899,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.418631243969415,
-            longitude: -3.705969762193341
+            coordinates: [40.418631243969415, -3.705969762193341]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/303037.pdf?idEdificio=af08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -1991,8 +1917,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42782496214609,
-            longitude: -3.706474495078322
+            coordinates: [40.42782496214609, -3.706474495078322]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307231.pdf?idEdificio=c618f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2010,8 +1935,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.423779252051425,
-            longitude: -3.7145996063573756
+            coordinates: [40.423779252051425, -3.7145996063573756]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11005963.pdf?idEdificio=64458a205fccc610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -2029,8 +1953,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43793725485899,
-            longitude: -3.7218544182655786
+            coordinates: [40.43793725485899, -3.7218544182655786]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11050879.pdf?idEdificio=aefeb801a201e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -2048,8 +1971,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4257331392528,
-            longitude: -3.700926972454831
+            coordinates: [40.4257331392528, -3.700926972454831]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/301272.pdf?idEdificio=4208f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2067,8 +1989,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.406996505596624,
-            longitude: -3.6930483362488657
+            coordinates: [40.406996505596624, -3.6930483362488657]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/321069.pdf?idEdificio=cf18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2086,8 +2007,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43675593917329,
-            longitude: -3.6861820403705816
+            coordinates: [40.43675593917329, -3.6861820403705816]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/313939.pdf?idEdificio=eb18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2105,8 +2025,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40864029339671,
-            longitude: -3.6939504103293244
+            coordinates: [40.40864029339671, -3.6939504103293244]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/305800.pdf?idEdificio=a418f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2124,8 +2043,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.44042600324054,
-            longitude: -3.690212174964136
+            coordinates: [40.44042600324054, -3.690212174964136]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11055833.pdf?idEdificio=db67dfa16a63e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -2143,8 +2061,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41854475379762,
-            longitude: -3.6925831204366806
+            coordinates: [40.41854475379762, -3.6925831204366806]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325790.pdf?idEdificio=a128f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2162,8 +2079,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43546990168913,
-            longitude: -3.692433817871342
+            coordinates: [40.43546990168913, -3.692433817871342]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/313014.pdf?idEdificio=aa18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2181,8 +2097,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41601631762229,
-            longitude: -3.694738346891257
+            coordinates: [40.41601631762229, -3.694738346891257]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325816.pdf?idEdificio=40083d43db3a45103d43db3a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2200,8 +2115,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.44268919706804,
-            longitude: -3.694627300005272
+            coordinates: [40.44268919706804, -3.694627300005272]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11055925.pdf?idEdificio=845f5454dca3e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -2219,8 +2133,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40951154860526,
-            longitude: -3.6884516670285747
+            coordinates: [40.40951154860526, -3.6884516670285747]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325775.pdf?idEdificio=6128f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2238,8 +2151,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4205202700433,
-            longitude: -3.7049639867882593
+            coordinates: [40.4205202700433, -3.7049639867882593]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302157.pdf?idEdificio=0808f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2257,24 +2169,9 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41986954619534,
-            longitude: -3.703825594056321
+            coordinates: [40.41986954619534, -3.703825594056321]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302204.pdf?idEdificio=a908f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
-    },
-    {
-        jsonURL: "https://datos.madrid.es/egob/catalogo/tipo/edificio/307312-oratorio-caballero-gracia.json",
-        originID: 307312,
-        title: "Oratorio del Caballero de Gracia",
-        relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=20083d43db3a45103d43db3a45102e085a0aRCRD",
-        address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
-            locality: "MADRID",
-            postalCode: 28013,
-            street: "Calle CABALLERO DE GRACIA 5"
-        },
-        references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307312.pdf?idEdificio=20083d43db3a45103d43db3a45102e085a0aRCRD&tipoMon=E"
     },
     {
         jsonURL: "https://datos.madrid.es/egob/catalogo/tipo/edificio/302122-palacio-altamira-instituto-europeo-diseno-.json",
@@ -2290,8 +2187,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.421767344162355,
-            longitude: -3.707287420083181
+            coordinates: [40.421767344162355, -3.707287420083181]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302122.pdf?idEdificio=0708f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2309,8 +2205,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43211109393623,
-            longitude: -3.684551710224391
+            coordinates: [40.43211109393623, -3.684551710224391]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11050053.pdf?idEdificio=1d4ae77ccd10e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -2328,8 +2223,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4232789604228,
-            longitude: -3.6884121235090532
+            coordinates: [40.4232789604228, -3.6884121235090532]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325821.pdf?idEdificio=8228f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2347,8 +2241,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42058333522924,
-            longitude: -3.6945443828867504
+            coordinates: [40.42058333522924, -3.6945443828867504]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325941.pdf?idEdificio=4328f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2366,8 +2259,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41902261618159,
-            longitude: -3.692188193693138
+            coordinates: [40.41902261618159, -3.692188193693138]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325771.pdf?idEdificio=4128f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2385,8 +2277,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40985206511554,
-            longitude: -3.6970118323675845
+            coordinates: [40.40985206511554, -3.6970118323675845]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/305737.pdf?idEdificio=6418f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2404,8 +2295,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419882465507165,
-            longitude: -3.7046626413957284
+            coordinates: [40.419882465507165, -3.7046626413957284]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302164.pdf?idEdificio=6808f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2423,8 +2313,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41985083351601,
-            longitude: -3.7055098379576314
+            coordinates: [40.41985083351601, -3.7055098379576314]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302152.pdf?idEdificio=e708f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2442,8 +2331,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41902261618159,
-            longitude: -3.692188193693138
+            coordinates: [40.41902261618159, -3.692188193693138]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325803.pdf?idEdificio=e128f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2461,8 +2349,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.426837593736934,
-            longitude: -3.7126361453494083
+            coordinates: [40.426837593736934, -3.7126361453494083]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325350.pdf?idEdificio=8028f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2480,8 +2367,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42529015852938,
-            longitude: -3.6968561786505174
+            coordinates: [40.42529015852938, -3.6968561786505174]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/301402.pdf?idEdificio=c208f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2499,8 +2385,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41408863088947,
-            longitude: -3.700382632319931
+            coordinates: [40.41408863088947, -3.700382632319931]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/304093.pdf?idEdificio=e218f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2518,8 +2403,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41471076984459,
-            longitude: -3.705871508121933
+            coordinates: [40.41471076984459, -3.705871508121933]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/303226.pdf?idEdificio=6018f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2537,8 +2421,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.414975858382746,
-            longitude: -3.712927052732882
+            coordinates: [40.414975858382746, -3.712927052732882]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302894.pdf?idEdificio=2f08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2556,8 +2439,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41232213776173,
-            longitude: -3.702168315990886
+            coordinates: [40.41232213776173, -3.702168315990886]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/304779.pdf?idEdificio=e318f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2575,8 +2457,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42142429655837,
-            longitude: -3.691016699006383
+            coordinates: [40.42142429655837, -3.691016699006383]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/317990.pdf?idEdificio=ce18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2594,8 +2475,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.520729051083116,
-            longitude: -3.776611188452123
+            coordinates: [40.520729051083116, -3.776611188452123]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11067352.pdf?idEdificio=3de1a8071288e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -2613,8 +2493,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.417955,
-            longitude: -3.714312
+            coordinates: [40.417955, -3.714312]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/300001.pdf?idEdificio=2008f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2632,8 +2511,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41965292860097,
-            longitude: -3.6878947032733205
+            coordinates: [40.41965292860097, -3.6878947032733205]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/390002.pdf?idEdificio=0528f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2651,8 +2529,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.46278617142339,
-            longitude: -3.6507587941024298
+            coordinates: [40.46278617142339, -3.6507587941024298]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11067509.pdf?idEdificio=6c4e78610b88e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -2670,8 +2547,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.380255445301586,
-            longitude: -3.620330652764418
+            coordinates: [40.380255445301586, -3.620330652764418]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11067173.pdf?idEdificio=c3a3a7055e78e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -2689,8 +2565,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.5022552628529,
-            longitude: -3.659176242434582
+            coordinates: [40.5022552628529, -3.659176242434582]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11067550.pdf?idEdificio=eb0478610b88e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -2708,8 +2583,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42429327897972,
-            longitude: -3.6940790697439114
+            coordinates: [40.42429327897972, -3.6940790697439114]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325827.pdf?idEdificio=a228f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2727,8 +2601,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.45242744242779,
-            longitude: -3.6746764221304726
+            coordinates: [40.45242744242779, -3.6746764221304726]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11065764.pdf?idEdificio=d8cd376edad7e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -2746,8 +2619,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40960698563183,
-            longitude: -3.705510095790745
+            coordinates: [40.40960698563183, -3.705510095790745]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307263.pdf?idEdificio=0718f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2765,8 +2637,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43227072485769,
-            longitude: -3.6634101865891995
+            coordinates: [40.43227072485769, -3.6634101865891995]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/329096.pdf?idEdificio=e328f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2784,8 +2655,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41539735232832,
-            longitude: -3.707385727413197
+            coordinates: [40.41539735232832, -3.707385727413197]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/390003.pdf?idEdificio=2528f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2802,8 +2672,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41396526110986,
-            longitude: -3.722773406728326
+            coordinates: [40.41396526110986, -3.722773406728326]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/340529.pdf?idEdificio=6428f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2820,8 +2689,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.39779539202881,
-            longitude: -3.7157588747442656
+            coordinates: [40.39779539202881, -3.7157588747442656]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/340528.pdf?idEdificio=4428f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2839,8 +2707,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41997849525109,
-            longitude: -3.68872691282157
+            coordinates: [40.41997849525109, -3.68872691282157]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/340416.pdf?idEdificio=2428f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2858,8 +2725,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.40673161633396,
-            longitude: -3.711631948428992
+            coordinates: [40.40673161633396, -3.711631948428992]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/340394.pdf?idEdificio=0428f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2877,8 +2743,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41689383463677,
-            longitude: -3.70226287159844
+            coordinates: [40.41689383463677, -3.70226287159844]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/390004.pdf?idEdificio=4528f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2896,8 +2761,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41800496217898,
-            longitude: -3.7008122201025677
+            coordinates: [40.41800496217898, -3.7008122201025677]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/303820.pdf?idEdificio=c118f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2915,8 +2779,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.413477661561586,
-            longitude: -3.698997649377588
+            coordinates: [40.413477661561586, -3.698997649377588]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/304332.pdf?idEdificio=8318f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2934,8 +2797,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41507827018255,
-            longitude: -3.6909088749077665
+            coordinates: [40.41507827018255, -3.6909088749077665]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/317885.pdf?idEdificio=4e18f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2953,8 +2815,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41038846182965,
-            longitude: -3.7146876430333604
+            coordinates: [40.41038846182965, -3.7146876430333604]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325454.pdf?idEdificio=e028f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2972,8 +2833,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.416550888822,
-            longitude: -3.7037990314537987
+            coordinates: [40.416550888822, -3.7037990314537987]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307076.pdf?idEdificio=8518f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -2991,8 +2851,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41731385250003,
-            longitude: -3.7018150873321436
+            coordinates: [40.41731385250003, -3.7018150873321436]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307298.pdf?idEdificio=8718f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3010,8 +2869,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.412971157638985,
-            longitude: -3.707369400972756
+            coordinates: [40.412971157638985, -3.707369400972756]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/303772.pdf?idEdificio=8118f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3029,8 +2887,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.412388448625556,
-            longitude: -3.692021796072817
+            coordinates: [40.412388448625556, -3.692021796072817]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325786.pdf?idEdificio=8128f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3048,8 +2905,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42000078931801,
-            longitude: -3.71181890174026
+            coordinates: [40.42000078931801, -3.71181890174026]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307041.pdf?idEdificio=e418f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3067,8 +2923,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41929644186726,
-            longitude: -3.6976372524904275
+            coordinates: [40.41929644186726, -3.6976372524904275]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11017265.pdf?idEdificio=5b43e485f1a2d610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -3086,8 +2941,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.44065779577869,
-            longitude: -3.6880526406060454
+            coordinates: [40.44065779577869, -3.6880526406060454]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11053575.pdf?idEdificio=b711078f64c1e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -3105,8 +2959,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41534345623286,
-            longitude: -3.6924516397138722
+            coordinates: [40.41534345623286, -3.6924516397138722]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11016982.pdf?idEdificio=056bce908a92d610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -3124,8 +2977,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41482596602272,
-            longitude: -3.6931415043070634
+            coordinates: [40.41482596602272, -3.6931415043070634]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/390005.pdf?idEdificio=6528f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3143,8 +2995,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42691245380727,
-            longitude: -3.69979134642512
+            coordinates: [40.42691245380727, -3.69979134642512]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11049875.pdf?idEdificio=14ba072df910e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -3162,8 +3013,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.422854719603144,
-            longitude: -3.6928584806310307
+            coordinates: [40.422854719603144, -3.6928584806310307]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/325817.pdf?idEdificio=6228f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3181,8 +3031,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41776291784375,
-            longitude: -3.70918800795985
+            coordinates: [40.41776291784375, -3.70918800795985]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307072.pdf?idEdificio=6518f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3200,8 +3049,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.408011845853444,
-            longitude: -3.700475207314223
+            coordinates: [40.408011845853444, -3.700475207314223]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11018036.pdf?idEdificio=96e756881493d610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -3219,16 +3067,15 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.424301175943256,
-            longitude: -3.7162688083251094
+            coordinates: [40.424301175943256, -3.7162688083251094]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11005484.pdf?idEdificio=201e4c90b3dcc610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
     {
         jsonURL: "https://datos.madrid.es/egob/catalogo/tipo/edificio/11073713-terminal-t4.json",
         originID: 11073713,
-        title: "Terminal T4,
-            relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=194cbd23f57ae610VgnVCM2000001f4a900aRCRD",
+        title: "Terminal T4",
+        relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=194cbd23f57ae610VgnVCM2000001f4a900aRCRD",
         address: {
             districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Distrito",
             locality: "MADRID",
@@ -3237,8 +3084,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.49244999472662,
-            longitude: -3.591837062218565
+            coordinates: [40.49244999472662, -3.591837062218565]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11073713.pdf?idEdificio=194cbd23f57ae610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -3256,8 +3102,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.435197111159646,
-            longitude: -3.688015719288949
+            coordinates: [40.435197111159646, -3.688015719288949]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11053556.pdf?idEdificio=a790078f64c1e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -3275,8 +3120,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42418961131494,
-            longitude: -3.712366421203481
+            coordinates: [40.42418961131494, -3.712366421203481]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11023466.pdf?idEdificio=0b592f9156e4d610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -3294,8 +3138,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.43965048520964,
-            longitude: -3.6718342742664696
+            coordinates: [40.43965048520964, -3.6718342742664696]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11050220.pdf?idEdificio=fd8987c41420e610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -3313,8 +3156,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.424691322944106,
-            longitude: -3.6942249750928022
+            coordinates: [40.424691322944106, -3.6942249750928022]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11027622.pdf?idEdificio=174d227f2186d610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     },
@@ -3332,8 +3174,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41458749364033,
-            longitude: -3.713713125691665
+            coordinates: [40.41458749364033, -3.713713125691665]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11006305.pdf?idEdificio=b666390fd42dc610VgnVCM2000001f4a900aRCRD&tipoMon=E"
     },
@@ -3351,8 +3192,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42151409771597,
-            longitude: -3.7074497966802955
+            coordinates: [40.42151409771597, -3.7074497966802955]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302124.pdf?idEdificio=2708f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3370,8 +3210,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41940962687557,
-            longitude: -3.69944766764916
+            coordinates: [40.41940962687557, -3.69944766764916]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302352.pdf?idEdificio=ac08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3389,8 +3228,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42056229267926,
-            longitude: -3.705459505540731
+            coordinates: [40.42056229267926, -3.705459505540731]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302159.pdf?idEdificio=4808f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3408,8 +3246,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42044310282671,
-            longitude: -3.7028414131115097
+            coordinates: [40.42044310282671, -3.7028414131115097]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302185.pdf?idEdificio=2908f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3427,8 +3264,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42037361389273,
-            longitude: -3.702416336705097
+            coordinates: [40.42037361389273, -3.702416336705097]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302187.pdf?idEdificio=6908f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3446,8 +3282,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42047752700586,
-            longitude: -3.704586337195032
+            coordinates: [40.42047752700586, -3.704586337195032]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307318.pdf?idEdificio=2818f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3465,8 +3300,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41951812230061,
-            longitude: -3.697892849039001
+            coordinates: [40.41951812230061, -3.697892849039001]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302341.pdf?idEdificio=0c08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3484,8 +3318,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41960260462519,
-            longitude: -3.700310150544718
+            coordinates: [40.41960260462519, -3.700310150544718]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302285.pdf?idEdificio=2b08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3503,8 +3336,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42120305505693,
-            longitude: -3.706751062021101
+            coordinates: [40.42120305505693, -3.706751062021101]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302135.pdf?idEdificio=8708f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3522,8 +3354,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.422783222706194,
-            longitude: -3.7105751263868805
+            coordinates: [40.422783222706194, -3.7105751263868805]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302053.pdf?idEdificio=e308f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3541,8 +3372,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42241829328353,
-            longitude: -3.709852221827304
+            coordinates: [40.42241829328353, -3.709852221827304]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302056.pdf?idEdificio=4408f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3560,8 +3390,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41920713559999,
-            longitude: -3.6986676029689782
+            coordinates: [40.41920713559999, -3.6986676029689782]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302355.pdf?idEdificio=0d08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3579,8 +3408,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41976473508097,
-            longitude: -3.698826608774758
+            coordinates: [40.41976473508097, -3.698826608774758]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302333.pdf?idEdificio=ab08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3598,8 +3426,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419835306475555,
-            longitude: -3.699074876456168
+            coordinates: [40.419835306475555, -3.699074876456168]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302332.pdf?idEdificio=8b08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3617,8 +3444,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4190843632902,
-            longitude: -3.6981123266852105
+            coordinates: [40.4190843632902, -3.6981123266852105]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302357.pdf?idEdificio=4d08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3636,8 +3462,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41932139571109,
-            longitude: -3.6991402812861884
+            coordinates: [40.41932139571109, -3.6991402812861884]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302353.pdf?idEdificio=cc08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3655,8 +3480,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4204609465012,
-            longitude: -3.7043504121334347
+            coordinates: [40.4204609465012, -3.7043504121334347]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307317.pdf?idEdificio=0818f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3674,8 +3498,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419685368324615,
-            longitude: -3.698542888220262
+            coordinates: [40.419685368324615, -3.698542888220262]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302334.pdf?idEdificio=cb08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3693,8 +3516,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42010879230797,
-            longitude: -3.7000324985088477
+            coordinates: [40.42010879230797, -3.7000324985088477]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302280.pdf?idEdificio=aa08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3712,24 +3534,9 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41975031907702,
-            longitude: -3.701207530853102
+            coordinates: [40.41975031907702, -3.701207530853102]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302282.pdf?idEdificio=ea08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
-    },
-    {
-        jsonURL: "https://datos.madrid.es/egob/catalogo/tipo/edificio/302331-viviendas-comercio-rafael-sanchez.json",
-        originID: 302331,
-        title: "Viviendas y comercio para Rafael Sánchez",
-        relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6b08f7d9560a4510f7d9560a45102e085a0aRCRD",
-        address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
-            locality: "MADRID",
-            postalCode: 28013,
-            street: "Calle CLAVEL 4"
-        },
-        references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302331.pdf?idEdificio=6b08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
     {
         jsonURL: "https://datos.madrid.es/egob/catalogo/tipo/edificio/307320-viviendas-comercios-francisco-escrina.json",
@@ -3745,8 +3552,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42291755243886,
-            longitude: -3.710706208243318
+            coordinates: [40.42291755243886, -3.710706208243318]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307320.pdf?idEdificio=6818f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3764,8 +3570,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.421150945618855,
-            longitude: -3.7079057135178797
+            coordinates: [40.421150945618855, -3.7079057135178797]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302083.pdf?idEdificio=0608f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3783,8 +3588,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.423487402817905,
-            longitude: -3.710334985725268
+            coordinates: [40.423487402817905, -3.710334985725268]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302042.pdf?idEdificio=6308f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3802,8 +3606,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4208657051662,
-            longitude: -3.707407641201163
+            coordinates: [40.4208657051662, -3.707407641201163]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302086.pdf?idEdificio=6608f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3821,8 +3624,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42204991423245,
-            longitude: -3.7082216221580424
+            coordinates: [40.42204991423245, -3.7082216221580424]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302069.pdf?idEdificio=2508f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3840,8 +3642,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.420196449810746,
-            longitude: -3.700434184151691
+            coordinates: [40.420196449810746, -3.700434184151691]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302278.pdf?idEdificio=6a08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3859,8 +3660,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42260479210528,
-            longitude: -3.710290337398356
+            coordinates: [40.42260479210528, -3.710290337398356]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302054.pdf?idEdificio=0408f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3878,8 +3678,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42019974167522,
-            longitude: -3.7013772230560367
+            coordinates: [40.42019974167522, -3.7013772230560367]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302250.pdf?idEdificio=4a08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3897,8 +3696,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42326392942259,
-            longitude: -3.7100497207381746
+            coordinates: [40.42326392942259, -3.7100497207381746]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302050.pdf?idEdificio=8308f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3916,8 +3714,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.420527912725234,
-            longitude: -3.7051880312562004
+            coordinates: [40.420527912725234, -3.7051880312562004]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302158.pdf?idEdificio=2808f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3935,8 +3732,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41960571610798,
-            longitude: -3.6983063152074465
+            coordinates: [40.41960571610798, -3.6983063152074465]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302335.pdf?idEdificio=eb08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3954,8 +3750,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42230899265851,
-            longitude: -3.708577977039153
+            coordinates: [40.42230899265851, -3.708577977039153]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302071.pdf?idEdificio=6508f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3973,8 +3768,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42230263063633,
-            longitude: -3.709615247532299
+            coordinates: [40.42230263063633, -3.709615247532299]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302057.pdf?idEdificio=6408f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -3992,8 +3786,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41983659667071,
-            longitude: -3.7033183883781584
+            coordinates: [40.41983659667071, -3.7033183883781584]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302212.pdf?idEdificio=c908f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -4011,8 +3804,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.421052935047896,
-            longitude: -3.7077278705268566
+            coordinates: [40.421052935047896, -3.7077278705268566]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302084.pdf?idEdificio=2608f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -4030,8 +3822,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.4219249510091,
-            longitude: -3.708031705868069
+            coordinates: [40.4219249510091, -3.708031705868069]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/307319.pdf?idEdificio=4818f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -4049,8 +3840,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.419884476559766,
-            longitude: -3.7043326122944116
+            coordinates: [40.419884476559766, -3.7043326122944116]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302165.pdf?idEdificio=8808f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -4068,8 +3858,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.420909593356875,
-            longitude: -3.707596703829156
+            coordinates: [40.420909593356875, -3.707596703829156]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302085.pdf?idEdificio=4608f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -4087,8 +3876,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41925983291224,
-            longitude: -3.698892108659167
+            coordinates: [40.41925983291224, -3.698892108659167]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302354.pdf?idEdificio=ec08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
     },
@@ -4106,8 +3894,7 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.42043538395938,
-            longitude: -3.7026291559798357
+            coordinates: [40.42043538395938, -3.7026291559798357]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302186.pdf?idEdificio=0008723e180a4510723e180a45102e085a0aRCRD&tipoMon=E"
     },
@@ -4124,13 +3911,21 @@ const monuments = [
         },
         location: {
             type: "Point",
-            latitude: 40.41176029757209,
-            longitude: -3.761360271036638
+            coordinates: [40.41176029757209, -3.761360271036638]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/11066810.pdf?idEdificio=c8eb59843b38e610VgnVCM1000001d4a900aRCRD&tipoMon=E"
     }
 ]
 
-const users = [
+// const users = [
     
-]
+// ]
+
+
+Activity.create(activities)
+    .then(allActivitiesCreated => console.log('Se han creado', allActivitiesCreated.length, 'actividades en la BBDD'))
+    .catch(err => console.log('ERROR: ', err))
+
+Monument.create(monuments)
+    .then(allMonumentsCreated => console.log('Se han creado', allMonumentsCreated.length, 'monumentos en la BBDD'))
+    .catch(err => console.log('ERROR: ', err))

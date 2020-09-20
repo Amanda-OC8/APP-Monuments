@@ -1,0 +1,49 @@
+<h3>Editar la actividad {{name}}</h3>
+
+<form action='/activities/new' method='POST'>
+
+        <div class='form-group'>
+            <label><strong>Nombre:</strong></label>
+            <input type='text' name='name'>
+        </div>	
+
+        <div class='form-group'>
+            <label><strong>Tipo de actividad:</strong> </label>
+            <select name='actType'> 
+                <option value="Busqueda">Búsqueda</option>
+                <option value="Carrera">Carrera</option>
+                <option value="Pistas">Pistas</option>
+                <option value="Trivial">Trivial</option>
+            </select>
+        </div>
+
+        <div class='form-group'>
+            <label><strong>Descripción corta: </strong></label>
+            <input type='text' name='shortDescription'>
+        </div>
+                
+        <div class='form-group'>
+            <label><strong>Descripción larga:</strong> </label> <br>
+            <textarea rows = "5" cols = "40" name='longDescription'></textarea>
+        </div>
+        
+
+        <div class='form-group'>
+            <label><strong>Participantes:</strong> </label><br>
+            <label>Mínimo: </label><input class="form-num" type='number' name='minParticipants' > <label>Máximo: </label><input class="form-num" type='number' name='maxParticipants' >
+        </div>
+
+         <div class='form-group'>
+            <label><strong>Edades recomendadas:</strong> </label><br>
+            <label>Mínima: </label><input class="form-num" type='number' name='minAge'>
+            <label>Máxima: </label><input class="form-num" type='number' name='maxAge'>
+        </div>
+
+        <div class='form-group'>
+            <label><strong>Materiales necesarios, separados por comas:</strong> </label>
+            <input type='text' name='materials'>
+        </div>
+
+
+    <button type='submit' class='btn btn-info'>Crear</button>
+</form>
