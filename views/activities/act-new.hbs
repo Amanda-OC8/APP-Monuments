@@ -1,4 +1,4 @@
-<h3>Editar la actividad {{name}}</h3>
+<h3>Crea una nueva actividad</h3>
 
 <form action='/activities/new' method='POST'>
 
@@ -39,15 +39,30 @@
             <label>Máxima: </label><input class="form-num" type='number' name='maxAge'>
         </div>
 
-        <div class='form-group'>
-            <label><strong>Imagen personalizada:</strong> </label><br>
-        
-        </div>
 
         <div class='form-group'>
             <label><strong>Materiales necesarios, separados por comas:</strong> </label>
             <input type='text' name='materials'>
         </div>
+
+
+        <div class='form-group'>
+            <label><strong>Monumento(s) donde se puede realizar.</strong> Puedes seleccionar varios</label><br>
+                <select name="monuments" multiple>                  
+                        {{#each allMonuments}}
+                        <option value="{{_id}}">{{title}}</option>
+                        {{/each}}
+                </select>
+
+                {{!-- <ul>
+                    {{#each allMonuments}}
+                    <li> <input type="checkbox" name="{{this._id}}">{{this.title}}</li>
+                    {{/each}}
+                </ul> --}}
+
+        
+        </div>
+
 
 
     <button type='submit' class='btn btn-info'>Crear</button>

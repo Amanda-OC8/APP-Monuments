@@ -16,6 +16,7 @@
                         <p class="card-text">Descripción: {{longDescription}}.</p>
                         <p>Edades: de {{minAge}} a {{maxAge}} años.</p>
                         <p>Número de participantes: de {{minParticipants}} a {{maxParticipants}} personas.</p>
+
                         {{#if materials.length}}
                         <p>Materiales necesarios</p>
                         <ul> 
@@ -24,6 +25,16 @@
                             {{/each}}
                         </ul>
                         {{/if}}
+
+                        {{#if monuments.length}}
+                        <p>Monumentos donde se puede realizar</p>
+                        <ul> 
+                            {{#each monuments}}
+                            <li><a href="/monuments/{{this._id}}">{{this.title}}</a></li>
+                            {{/each}}
+                        </ul>
+                        {{/if}}
+
                     </div>
                 </div>
                 

@@ -2,10 +2,15 @@ const express = require("express")
 const router = express.Router()
 
 const Activity = require("../models/activity.model")
+const Monument = require("../models/monuments.model")
+
+// Middleware config for the loggin authentication 
+
+const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.render('index', { loginErrorMessage: 'Acceso restringido' })
 
 
 //Index
-router.get("/", (req, res, next) => {
+router.get("/", checkLoggedIn,  (req, res, next) => {
 
     Activity.find()
         .then(allAct => res.render("activities/act-index", { allAct }))
@@ -14,26 +19,29 @@ router.get("/", (req, res, next) => {
 )
 
 //Edit activity
-router.get("/edit/:act_id", (req, res, next) => {
+router.get("/edit/:act_id", checkLoggedIn, (req, res, next) => {
     const actId = req.params.act_id
 
-    Activity.findById(actId)
-        .then(foundAct => res.render("activities/act-edit", foundAct))
-        .catch(err => next(err))
-    }
-)
+    const activityPromise = Activity.findById(actId)
+    const monumentPromise = Monument.find()
 
-router.post("/edit/:act_id", (req, res, next) => {
+    Promise.all([activityPromise, monumentPromise])
+        .then(results => res.render("activities/act-edit", { activity: results[0], monuments: results[1] }))
+        .catch(err => next(new Error(err)))
+
+})
+
+router.post("/edit/:act_id", checkLoggedIn,  (req, res, next) => {
     const actId = req.params.act_id
-    const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials } = req.body
+    const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments } = req.body
 
     if (!materials.length) {
 
-        Activity.findByIdAndUpdate(actId,{ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge })
+        Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, monuments })
             .then(() => res.redirect("/activities"))
             .catch(err => next(err))
     } else {
-        Activity.findByIdAndUpdate(actId,{ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials] })
+        Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials], monuments})
             .then(() => res.redirect("/activities"))
             .catch(err => next(err))
     }
@@ -41,18 +49,26 @@ router.post("/edit/:act_id", (req, res, next) => {
 })
 
 // Add activity
-router.get("/new", (req, res, next) => res.render("activities/act-new"))
+router.get("/new", checkLoggedIn, (req, res, next) => {
 
-router.post("/new", (req, res, next) => {
-    const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials } = req.body
+    //Load all the monuments to the view
+    Monument.find()
+        .then(allMonuments => res.render("activities/act-new", { allMonuments }))
+        .catch(err=> next(err))
+    
+})
+
+router.post("/new", checkLoggedIn, (req, res, next) => {
+    const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments } = req.body
+    const owner =req.user._id
 
     if (!materials.length) {
 
-        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge })
+        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, owner, monuments })
             .then(() => res.redirect("/activities"))
             .catch(err => next(err))
     } else {
-        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials] })
+        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials], owner, monuments })
             .then(() => res.redirect("/activities"))
             .catch(err => next(err))
     }
@@ -60,7 +76,7 @@ router.post("/new", (req, res, next) => {
 })
 
 //Delete activity
-router.get("/delete/:act_id", (req, res, next) => {
+router.get("/delete/:act_id", checkLoggedIn, (req, res, next) => {
     const actId = req.params.act_id
     Activity.findByIdAndDelete(actId)
         .then(() => res.redirect("/activities"))
@@ -69,10 +85,11 @@ router.get("/delete/:act_id", (req, res, next) => {
 
 
 // Activity details
-router.get("/:act_id", (req, res, next) => {
+router.get("/:act_id", checkLoggedIn, (req, res, next) => {
     const actId= req.params.act_id
 
     Activity.findById(actId)
+        .populate("monuments")
         .then(foundAct => res.render("activities/act-details", foundAct))
         .catch(err => next(err))
     }   

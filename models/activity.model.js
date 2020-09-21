@@ -15,7 +15,15 @@ const activitySchema = new Schema({
     maxAge: Number,
     imgURL: String,
     materials: [String],
-    // owner: { type: Schema.Types.ObjectId, ref: 'User' },     // 'User' es el nombre del modelo
+    owner: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        req: true
+    }],
+    monuments: [{
+        type: Schema.Types.ObjectId,
+        ref: "Monument"
+    }]
 }, {
     timestamps: true
 })

@@ -3,7 +3,11 @@ const router = express.Router()
 
 const Monument = require("../models/monuments.model")
 
-router.get("/", (req, res, next) => {
+// Middleware config for the loggin authentication 
+
+const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.render('index', { loginErrorMessage: 'Acceso restringido' })
+
+router.get("/", checkLoggedIn, (req, res, next) => {
 
     Monument.find()
         .then(allMonuments => {
@@ -13,7 +17,7 @@ router.get("/", (req, res, next) => {
         .catch(err => next(err))
 })
 
-router.get("/:monument_id", (req, res, next) => {
+router.get("/:monument_id", checkLoggedIn, (req, res, next) => {
     const monumentId = req.params.monument_id
     
     Monument.findById(monumentId)

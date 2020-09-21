@@ -14,12 +14,7 @@ const monumentSchema = new Schema({
         street: String
     },
     location: { type: { type: String }, coordinates: [Number] },
-    references: String,
-    // activities: [{
-    //     type: Schema.Type.ObjectId,
-    //     ref: "Activity"
-    // }]
-
+    references: String
 }, {
     timestamps: true
 })
