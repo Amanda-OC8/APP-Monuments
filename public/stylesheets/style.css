@@ -16,6 +16,9 @@ h1, h2, h3 {
 .act-detail-img {
   width: 90%; }
 
+#ind-map {
+  height: 500px; }
+
 #errorMsg {
   background-color: red;
   color: white;

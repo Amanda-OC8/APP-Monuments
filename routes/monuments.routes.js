@@ -7,17 +7,14 @@ const Monument = require("../models/monuments.model")
 
 const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.render('index', { loginErrorMessage: 'Acceso restringido' })
 
-router.get("/", checkLoggedIn, (req, res, next) => {
+router.get("/", (req, res, next) => {
 
     Monument.find()
-        .then(allMonuments => {
-            console.log(allMonuments[0].title)
-            res.render("monuments/monument-index", { allMonuments })
-        })
+        .then(allMonuments => res.render("monuments/monument-index", { allMonuments }))
         .catch(err => next(err))
 })
 
-router.get("/:monument_id", checkLoggedIn, (req, res, next) => {
+router.get("/:monument_id",  (req, res, next) => {
     const monumentId = req.params.monument_id
     
     Monument.findById(monumentId)
