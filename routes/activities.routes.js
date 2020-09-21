@@ -27,9 +27,17 @@ router.post("/edit/:act_id", (req, res, next) => {
     const actId = req.params.act_id
     const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials } = req.body
 
-    Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials] })
-        .then(() => res.redirect("/activities"))
-        .catch(err => next(err))
+    if (!materials.length) {
+
+        Activity.findByIdAndUpdate(actId,{ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge })
+            .then(() => res.redirect("/activities"))
+            .catch(err => next(err))
+    } else {
+        Activity.findByIdAndUpdate(actId,{ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials] })
+            .then(() => res.redirect("/activities"))
+            .catch(err => next(err))
+    }
+
 })
 
 // Add activity
@@ -38,9 +46,17 @@ router.get("/new", (req, res, next) => res.render("activities/act-new"))
 router.post("/new", (req, res, next) => {
     const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials } = req.body
 
-    Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials] })
-        .then(() => res.redirect("/activities"))
-        .catch(err => next(err))
+    if (!materials.length) {
+
+        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge })
+            .then(() => res.redirect("/activities"))
+            .catch(err => next(err))
+    } else {
+        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials] })
+            .then(() => res.redirect("/activities"))
+            .catch(err => next(err))
+    }
+
 })
 
 //Delete activity

@@ -13,7 +13,9 @@ const activitySchema = new Schema({
     maxParticipants: Number,
     minAge: Number,
     maxAge: Number,
-    materials: [String]
+    imgURL: String,
+    materials: [String],
+    // owner: { type: Schema.Types.ObjectId, ref: 'User' },     // 'User' es el nombre del modelo
 }, {
     timestamps: true
 })

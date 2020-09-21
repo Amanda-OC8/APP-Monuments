@@ -4,11 +4,12 @@ const Monument = require('../models/monuments.model')
 const User = require("../models/user.model")
 
 const dbtitle = 'Monumentos-Madrid'
-mongoose.connect(`mongodb://localhost/${dbtitle}`)
+mongoose.connect(`mongodb://localhost/${dbtitle}`, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.set('useCreateIndex', true)
 
 Activity.collection.drop()
 Monument.collection.drop()
-User.collection.drop()
+// User.collection.drop()
 
 const activities = [
     {
@@ -135,8 +136,7 @@ const monuments = [
             street: "Calle ALCALÁ 16"
         },
         location: {
-            type: "Point"
-            ,
+            type: "Point",
             coordinates: [40.417345829900306, -3.69956773930541]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302440.pdf?idEdificio=2e08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
@@ -3929,3 +3929,6 @@ Activity.create(activities)
 Monument.create(monuments)
     .then(allMonumentsCreated => console.log('Se han creado', allMonumentsCreated.length, 'monumentos en la BBDD'))
     .catch(err => console.log('ERROR: ', err))
+
+// close the database
+// mongoose.connection.close()

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-md-10">
 
         <div class="card">
@@ -6,23 +6,35 @@
 
                 <h5 class="card-title">{{name}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">Tipo: {{actType}}</h6>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <img class="act-detail-img" src="../images/Default.png" alt="Imagen fondo negro con interrogaciones">
+                    </div>
 
-                <p class="card-text">Descripción: {{longDescription}}.</p>
-                <p>Edades: de {{minAge}} a {{maxAge}} años.</p>
-                <p>Número de participantes: de {{minPariticipants}} a {{maxParticipants}} personas.</p>
-                {{#if materials}}
-                <p>Materiales necesarios</p>
-                <ul> 
-                    {{#each materials}}
-                    <li>{{this}}</li>
-                    {{/each}}
-                </ul>
-                {{/if}}
+                    <div class="col-sm-8">
+
+                        <p class="card-text">Descripción: {{longDescription}}.</p>
+                        <p>Edades: de {{minAge}} a {{maxAge}} años.</p>
+                        <p>Número de participantes: de {{minParticipants}} a {{maxParticipants}} personas.</p>
+                        {{#if materials.length}}
+                        <p>Materiales necesarios</p>
+                        <ul> 
+                            {{#each materials}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                        {{/if}}
+                    </div>
+                </div>
+                
+                
+
 
                 <a href="/activities/edit/{{_id}}" class="btn btn-info">Editar</a>
                 <a href="/activities/delete/{{_id}}" class="btn btn-danger">Eliminar</a>
             </div>
         </div>
+        <a href="/activities" class="btn btn-info">Volver al índice de actividades</a>
 
     </div>
 
