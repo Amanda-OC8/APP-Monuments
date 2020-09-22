@@ -7,9 +7,12 @@ const dbtitle = 'Monumentos-Madrid'
 mongoose.connect(`mongodb://localhost/${dbtitle}`, { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.set('useCreateIndex', true)
 
+const bcrypt = require("bcrypt")
+const bcryptSalt = 10
+
 Activity.collection.drop()
 Monument.collection.drop()
-// User.collection.drop()
+User.collection.drop()
 
 const activities = [
     {
@@ -21,7 +24,7 @@ const activities = [
         maxParticipants: 10,
         minAge: 7,
         maxAge: 15,
-        materials: ["Papel", "Bolis", "Objeto"]
+        materials: "Papel, Bolis y objeto a ocultar"
     },
     {
         name: "Mide el edificio",
@@ -42,7 +45,7 @@ const activities = [
         maxParticipants: 10,
         minAge: 7,
         maxAge: 10,
-        materials: ["Papel", "Bolis"]
+        materials: "Papel y bolis"
     },
     {
         name: "¿Sabes la historia?",
@@ -53,7 +56,7 @@ const activities = [
         maxParticipants: 16,
         minAge: 12,
         maxAge: 14,
-        materials: ["Tarjetas", "Gomets"]
+        materials: "Tarjetas y gomets"
     },
     {
         name: "Descubre la historia oculta",
@@ -64,19 +67,20 @@ const activities = [
         maxParticipants: 10,
         minAge: 20,
         maxAge: 35,
-        materials: ["Papel", "Bolis"]
+        materials: "Papel y bolis"
     }
 ]
 
 const monuments = [
+
     {
         jsonURL: "https://datos.madrid.es/egob/catalogo/tipo/edificio/302283-almacenes-rodriguez.json",
         originID: 302283,
         title: "Almacenes Rodríguez",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0b08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 3"
@@ -93,8 +97,8 @@ const monuments = [
         title: "Antigua Fábrica Martini &amp; Rossi",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=aae94d07192ae610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/SanBlas-Canillejas",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/SanBlas-Canillejas/Barrio/Rejas",
+            districtURL: "San Blas-Canillejas",
+            areaURL: "Rejas",
             locality: "MADRID",
             postalCode: 28022,
             street: "AVENIDA ARAGON 328"
@@ -111,8 +115,8 @@ const monuments = [
         title: "Ateneo de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4218f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle PRADO 21"
@@ -129,14 +133,15 @@ const monuments = [
         title: "Banco Bilbao Vizcaya Argentaria",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2e08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 16"
         },
         location: {
-            type: "Point",
+            type: "Point"
+            ,
             coordinates: [40.417345829900306, -3.69956773930541]
         },
         references: "https://patrimonioypaisaje.madrid.es/FrameWork/generacionPDFMonumenta/302440.pdf?idEdificio=2e08f7d9560a4510f7d9560a45102e085a0aRCRD&tipoMon=E"
@@ -147,8 +152,8 @@ const monuments = [
         title: "Banco de España",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2228f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 48"
@@ -165,8 +170,8 @@ const monuments = [
         title: "Banco Matritense",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8a08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 22"
@@ -183,8 +188,8 @@ const monuments = [
         title: "Basílica Pontificia de San Miguel",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e518f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28005,
             street: "CALLE SAN JUSTO 4"
@@ -201,8 +206,8 @@ const monuments = [
         title: "Biblioteca Central de la UNED Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=131c28649e1ae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca/Barrio/CasaCampo",
+            districtURL: "Moncloa-Aravaca",
+            areaURL: "Casa de Campo",
             locality: "MADRID",
             postalCode: 28008,
             street: "CALLE SENDA DEL REY 8"
@@ -219,8 +224,8 @@ const monuments = [
         title: "Biblioteca Pública Usera José Hierro",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e7daf2ef5c6ae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Usera",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Usera/Barrio/Pradolongo",
+            districtURL: "Usera",
+            areaURL: "Pradolongo",
             locality: "MADRID",
             postalCode: 28026,
             street: "AVENIDA RAFAELA YBARRA 43"
@@ -237,8 +242,8 @@ const monuments = [
         title: "Bolsa de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8d18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "PLAZA LEALTAD 1"
@@ -255,8 +260,8 @@ const monuments = [
         title: "CaixaForum",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c428f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "PASEO PRADO 36"
@@ -273,8 +278,8 @@ const monuments = [
         title: "Capilla de San Isidro en la Iglesia de San Andrés",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=00083d43db3a45103d43db3a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28005,
             street: "PLAZA SAN ANDRES 1"
@@ -291,8 +296,8 @@ const monuments = [
         title: "Casa Árabe (antiguas Escuelas Aguirre)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ac18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Recoletos",
+            districtURL: "Salamanca",
+            areaURL: "Recoletos",
             locality: "MADRID",
             postalCode: 28009,
             street: "CALLE ALCALA 62"
@@ -309,8 +314,8 @@ const monuments = [
         title: "Casa de la Villa",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4f08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28005,
             street: "PLAZA VILLA 5"
@@ -327,8 +332,8 @@ const monuments = [
         title: "Casa de las Alhajas. Antigua Caja de Ahorros",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0618f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "PLAZA SAN MARTIN 1"
@@ -345,8 +350,8 @@ const monuments = [
         title: "Casa de las Flores",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e818f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi/Barrio/Gaztambide",
+            districtURL: "Chamberi",
+            areaURL: "Gaztambide",
             locality: "MADRID",
             postalCode: 28015,
             street: "CALLE RODRIGUEZ SAN PEDRO 72"
@@ -363,8 +368,8 @@ const monuments = [
         title: "Casa del cura de la iglesia de San José",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8c08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ "
@@ -381,8 +386,8 @@ const monuments = [
         title: "Casa Sindical (actual sede del Ministerio de Sanidad, Servicios Sociales e Igualdad)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=9b48062df152d610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "PASEO PRADO 18"
@@ -399,8 +404,8 @@ const monuments = [
         title: "Casino de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6d08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE ALCALA 15"
@@ -417,8 +422,8 @@ const monuments = [
         title: "Casita Del Príncipe (El Pardo)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8ccfa8071288e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Fuencarral-ElPardo",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Fuencarral-ElPardo/Barrio/ElPardo",
+            districtURL: "Fuencarral-El Pardo",
+            areaURL: "El Pardo",
             locality: "MADRID",
             postalCode: 28048,
             street: "CALLE ADELINA PATTI 1"
@@ -435,8 +440,8 @@ const monuments = [
         title: "Cementerio de la Almudena",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=b1300183252ae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/CiudadLineal",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/CiudadLineal/Barrio/Ventas",
+            districtURL: "Ciudad Lineal",
+            areaURL: "Ventas",
             locality: "MADRID",
             postalCode: 28017,
             street: "AVENIDA DAROCA 94"
@@ -453,8 +458,8 @@ const monuments = [
         title: "Central Eléctrica del Pacífico, talleres y oficinas del Metro",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=b32ecef22dcae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/Pacifico",
+            districtURL: "Retiro",
+            areaURL: "Pacifico",
             locality: "MADRID",
             postalCode: 28007,
             street: "CALLE VALDERRIBAS 49"
@@ -471,8 +476,8 @@ const monuments = [
         title: "Centro Cultural Daoíz y Velarde",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=b4c3cef22dcae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/Pacifico",
+            districtURL: "Retiro",
+            areaURL: "Pacifico",
             locality: "MADRID",
             postalCode: 28007,
             street: "PLAZA DAOIZ Y VELARDE 4"
@@ -489,8 +494,8 @@ const monuments = [
         title: "Centro Cultural La Corrala (sede del Museo de Artes y Tradiciones Populares)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0418f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28005,
             street: "CALLE CARLOS ARNICHES 3"
@@ -507,8 +512,8 @@ const monuments = [
         title: "Centro del Ejército y la Armada (Casino Militar)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4b08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 9"
@@ -525,10 +530,9 @@ const monuments = [
         title: "Cine Avenida",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=00083a2ae80a45103a2ae80a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle ABADA 11"
         },
         location: {
@@ -543,8 +547,8 @@ const monuments = [
         title: "Cine Callao",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e608f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "Plaza CALLAO 2"
@@ -561,10 +565,9 @@ const monuments = [
         title: "Cine Gran Vía y Hotel Vincci",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0508f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GARCIA MOLINAS "
         },
         location: {
@@ -579,8 +582,8 @@ const monuments = [
         title: "Círculo de Bellas Artes",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a718f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 42"
@@ -597,8 +600,8 @@ const monuments = [
         title: "Círculo de la Unión Mercantil e Industrial",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8818f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 24"
@@ -615,9 +618,8 @@ const monuments = [
         title: "Ciudad Universitaria de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=185b0183252ae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Distrito",
+            districtURL: "Distrito",
             locality: "MADRID",
-            postalCode: "",
             street: "CIUDAD UNIVERSITARIA "
         },
         location: {
@@ -632,8 +634,8 @@ const monuments = [
         title: "Colegio de Nuestra Señora de Loreto. Madres Ursulinas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2128f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Goya",
+            districtURL: "Salamanca",
+            areaURL: "Goya",
             locality: "MADRID",
             postalCode: 28001,
             street: "CALLE PRINCIPE DE VERGARA 42"
@@ -650,8 +652,8 @@ const monuments = [
         title: "Colegio Mayor Casa do Brasil",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a1371521c50ae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca/Barrio/CiudadUniversitaria",
+            districtURL: "Moncloa-Aravaca",
+            areaURL: "Ciudad Universitaria",
             locality: "MADRID",
             postalCode: 28040,
             street: "AVENIDA ARCO DE LA VICTORIA 3"
@@ -668,8 +670,8 @@ const monuments = [
         title: "Colegio Nuestra Señora del Pilar",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=cb18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Recoletos",
+            districtURL: "Salamanca",
+            areaURL: "Recoletos",
             locality: "MADRID",
             postalCode: 28001,
             street: "CALLE CASTELLO 56"
@@ -686,8 +688,8 @@ const monuments = [
         title: "Colegio Oficial de Arquitectos de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=f3d5a9662229e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "CALLE HORTALEZA 63"
@@ -704,8 +706,8 @@ const monuments = [
         title: "Complejo El Águila",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=800b53f66bcae610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Arganzuela",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Arganzuela/Barrio/Delicias",
+            districtURL: "Arganzuela",
+            areaURL: "Delicias",
             locality: "MADRID",
             postalCode: 28045,
             street: "CALLE RAMIREZ DE PRADO 3"
@@ -722,8 +724,8 @@ const monuments = [
         title: "Congreso de los Diputados",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6218f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "Plaza CORTES 1"
@@ -740,8 +742,8 @@ const monuments = [
         title: "Convento de las Comendadoras y parroquia de Santiago el Mayor",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2108f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28015,
             street: "PLAZA COMENDADORAS 10"
@@ -758,8 +760,8 @@ const monuments = [
         title: "Cuartel del Conde Duque",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6028f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28015,
             street: "Calle CONDE DUQUE 9"
@@ -776,8 +778,8 @@ const monuments = [
         title: "Edificio Bankinter",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=b8df078f64c1e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi/Barrio/Almagro",
+            districtURL: "Chamberi",
+            areaURL: "Almagro",
             locality: "MADRID",
             postalCode: 28046,
             street: "PASEO CASTELLANA 29"
@@ -794,8 +796,8 @@ const monuments = [
         title: "Edificio Bankunión (Parlamento Europeo y Embajada de Irlanda)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e686dfa16a63e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Castellana",
+            districtURL: "Salamanca",
+            areaURL: "Castellana",
             locality: "MADRID",
             postalCode: 28046,
             street: "PASEO CASTELLANA 46"
@@ -812,8 +814,8 @@ const monuments = [
         title: "Edificio Carrión (Capitol)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c608f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle GRAN VIA 41"
@@ -830,8 +832,8 @@ const monuments = [
         title: "Edificio Coliseum (Teatro Coliseum)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a308f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28013,
             street: "CALLE GRAN VIA 78"
@@ -848,8 +850,8 @@ const monuments = [
         title: "Edificio de 20 viviendas en calle Cervantes",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=3d4473b43552d610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE CERVANTES 36"
@@ -866,10 +868,9 @@ const monuments = [
         title: "Edificio de La Unión y el Fénix",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e408f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GARCIA MOLINAS "
         },
         location: {
@@ -884,8 +885,8 @@ const monuments = [
         title: "Edificio de Los Previsores del Porvenir",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2d08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 19"
@@ -902,10 +903,9 @@ const monuments = [
         title: "Edificio de Oficinas y Apartamentos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a608f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 43"
         },
         location: {
@@ -920,8 +920,8 @@ const monuments = [
         title: "Edificio de Viviendas en la calle Hilarión Eslava",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=50e3ce908a92d610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi/Barrio/Gaztambide",
+            districtURL: "Chamberi",
+            areaURL: "Gaztambide",
             locality: "MADRID",
             postalCode: 28015,
             street: "CALLE HILARION ESLAVA 10"
@@ -938,8 +938,8 @@ const monuments = [
         title: "Edificio Girasol",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=b7b887c41420e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Castellana",
+            districtURL: "Salamanca",
+            areaURL: "Castellana",
             locality: "MADRID",
             postalCode: 28006,
             street: "CALLE LAGASCA 90"
@@ -956,8 +956,8 @@ const monuments = [
         title: "Edificio Gran Peña",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4c08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 2"
@@ -974,10 +974,9 @@ const monuments = [
         title: "Edificio Hostal Lauria",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c708f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 50"
         },
         location: {
@@ -992,10 +991,9 @@ const monuments = [
         title: "Edificio La Adriática",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a808f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
-            postalCode: "",
             street: "Plaza CALLAO "
         },
         location: {
@@ -1010,10 +1008,9 @@ const monuments = [
         title: "Edificio Los Sótanos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8508f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 59"
         },
         location: {
@@ -1028,10 +1025,9 @@ const monuments = [
         title: "Edificio Los Sótanos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a508f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 57"
         },
         location: {
@@ -1046,10 +1042,9 @@ const monuments = [
         title: "Edificio Los Sótanos y Teatro Lope de Vega",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c508f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 55"
         },
         location: {
@@ -1064,8 +1059,8 @@ const monuments = [
         title: "Edificio Matesanz",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e908f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle GRAN VIA 27"
@@ -1082,8 +1077,8 @@ const monuments = [
         title: "Edificio Metrópolis",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ed08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE ALCALA 39"
@@ -1100,8 +1095,8 @@ const monuments = [
         title: "Edificio para el Banco Urquijo",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2c08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 4"
@@ -1118,8 +1113,8 @@ const monuments = [
         title: "Edificio Rialto",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4708f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 54"
@@ -1136,8 +1131,8 @@ const monuments = [
         title: "Edificio Telefónica",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8908f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28013,
             street: "CALLE GRAN VIA 28"
@@ -1154,10 +1149,9 @@ const monuments = [
         title: "Edificio Vita",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4508f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 62"
         },
         location: {
@@ -1172,8 +1166,8 @@ const monuments = [
         title: "Edificio Vitalicio",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c308f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "Plaza ESPAÑA "
@@ -1190,10 +1184,9 @@ const monuments = [
         title: "Edificio y Cine Pompeya",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c408f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 70"
         },
         location: {
@@ -1208,8 +1201,8 @@ const monuments = [
         title: "Edificios Los Sótanos. Hotel Emperador",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e508f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle GRAN VIA 53"
@@ -1226,8 +1219,8 @@ const monuments = [
         title: "Ermita de la Virgen del Puerto",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8008f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28005,
             street: "PASEO VIRGEN DEL PUERTO 4"
@@ -1244,8 +1237,8 @@ const monuments = [
         title: "Ermita de San Antonio de la Florida",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=26233c5e74a8e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca/Barrio/CasaCampo",
+            districtURL: "Moncloa-Aravaca",
+            areaURL: "Casa de Campo",
             locality: "MADRID",
             postalCode: 28008,
             street: "GLORIETA SAN ANTONIO DE LA FLORIDA 4"
@@ -1262,8 +1255,8 @@ const monuments = [
         title: "Ermita de Santa Maria la Antigua",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8662b8a28658c610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Carabanchel",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Carabanchel/Barrio/VistaAlegre",
+            districtURL: "Carabanchel",
+            areaURL: "Vista Alegre",
             locality: "MADRID",
             postalCode: 28047,
             street: "CALLE MONSE&amp;Ntilde;OR OSCAR ROMERO 92"
@@ -1280,8 +1273,8 @@ const monuments = [
         title: "Escuelas Pías de San Fernando (Biblioteca  y centro de la UNED)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e618f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28012,
             street: "CALLE SOMBRERETE 15"
@@ -1298,8 +1291,8 @@ const monuments = [
         title: "Estación de Atocha",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2f18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Arganzuela",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Arganzuela/Barrio/Atocha",
+            districtURL: "Arganzuela",
+            areaURL: "Atocha",
             locality: "MADRID",
             postalCode: 28045,
             street: "PLAZA EMPERADOR CARLOS V 3"
@@ -1316,8 +1309,8 @@ const monuments = [
         title: "Fundación Francisco Giner de los Ríos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=bbc11521c50ae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi/Barrio/Almagro",
+            districtURL: "Chamberi",
+            areaURL: "Almagro",
             locality: "MADRID",
             postalCode: 28010,
             street: "PASEO GENERAL MARTINEZ CAMPOS 14"
@@ -1334,8 +1327,8 @@ const monuments = [
         title: "Fundación Juan March",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8245072df910e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Castellana",
+            districtURL: "Salamanca",
+            areaURL: "Castellana",
             locality: "MADRID",
             postalCode: 28006,
             street: "CALLE CASTELLO 77"
@@ -1352,8 +1345,8 @@ const monuments = [
         title: "Gimnasio del Colegio Maravillas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=f217a9662229e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin/Barrio/ElViso",
+            districtURL: "Chamartin",
+            areaURL: "El Viso",
             locality: "MADRID",
             postalCode: 28002,
             street: "CALLE JOAQUIN COSTA 21"
@@ -1370,8 +1363,8 @@ const monuments = [
         title: "Grandes Almacenes Madrid-París",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0908f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle DESENGAÑO 7"
@@ -1388,9 +1381,8 @@ const monuments = [
         title: "Hipódromo de la Zarzuela",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=71e5a8071288e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Distrito",
+            districtURL: "Distrito",
             locality: "MADRID",
-            postalCode: "",
             street: "HIPODROMO ZARZUELA "
         },
         location: {
@@ -1405,8 +1397,8 @@ const monuments = [
         title: "Hospital de Jornaleros San Francisco de Paula",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0918f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi/Barrio/RiosRosas",
+            districtURL: "Chamberi",
+            areaURL: "RiosRosas",
             locality: "MADRID",
             postalCode: 28003,
             street: "CALLE MAUDES 17"
@@ -1423,10 +1415,9 @@ const monuments = [
         title: "Hotel Alfonso XIII",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e718f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 34"
         },
         location: {
@@ -1441,10 +1432,9 @@ const monuments = [
         title: "Hotel Apartamentos Espahotel",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2408f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle FLOR BAJA 6"
         },
         location: {
@@ -1459,10 +1449,9 @@ const monuments = [
         title: "Hotel Gran Vía",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0a08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 25"
         },
         location: {
@@ -1477,10 +1466,9 @@ const monuments = [
         title: "Hotel Menfis",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8408f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GENERAL MITRE "
         },
         location: {
@@ -1495,10 +1483,9 @@ const monuments = [
         title: "Hotel Metropolitano",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2a08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 23"
         },
         location: {
@@ -1513,10 +1500,9 @@ const monuments = [
         title: "Hotel Nueva York y cine Actualidades",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a708f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 48"
         },
         location: {
@@ -1531,8 +1517,8 @@ const monuments = [
         title: "Hotel Palace",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a218f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "PLAZA CORTES 7"
@@ -1549,8 +1535,8 @@ const monuments = [
         title: "Hotel Roma",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ca08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CLAVEL 1"
@@ -1567,10 +1553,9 @@ const monuments = [
         title: "Hotel Washington",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a408f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 72"
         },
         location: {
@@ -1585,8 +1570,8 @@ const monuments = [
         title: "Hotel y cine Rex",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8608f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle GRAN VIA 43B"
@@ -1603,8 +1588,8 @@ const monuments = [
         title: "Iglesia de la Concepción Real de Calatrava",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0e08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 25"
@@ -1621,8 +1606,8 @@ const monuments = [
         title: "Iglesia de San Antonio de los Alemanes",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c108f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle PUEBLA 22"
@@ -1639,8 +1624,8 @@ const monuments = [
         title: "Iglesia de San Jerónimo el Real",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6e18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE MORETO 4"
@@ -1657,8 +1642,8 @@ const monuments = [
         title: "Iglesia de San José",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6c08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 43"
@@ -1675,8 +1660,8 @@ const monuments = [
         title: "Iglesia de San Manuel y San Benito",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8c18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Recoletos",
+            districtURL: "Salamanca",
+            areaURL: "Recoletos",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 83"
@@ -1693,8 +1678,8 @@ const monuments = [
         title: "Iglesia de San Marcos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a008f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28015,
             street: "CALLE SAN LEONARDO 10"
@@ -1711,8 +1696,8 @@ const monuments = [
         title: "Iglesia de San Pedro el Viejo",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6118f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28005,
             street: "Calle NUNCIO 14"
@@ -1729,8 +1714,8 @@ const monuments = [
         title: "Iglesia Parroquial de Santa Ana y Nuestra Señora de la Esperanza",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=7c29e5274b78e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moratalaz",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moratalaz/Barrio/Vinateros",
+            districtURL: "Moratalaz",
+            areaURL: "Vinateros",
             locality: "MADRID",
             postalCode: 28030,
             street: "CALLE CAÑADA 35"
@@ -1747,8 +1732,8 @@ const monuments = [
         title: "Ilustre Colegio Oficial de Médicos de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4618f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28012,
             street: "CALLE SANTA ISABEL 51"
@@ -1765,8 +1750,8 @@ const monuments = [
         title: "Instituto Cervantes (antiguo Banco Español del Río de la Plata)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a818f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 49"
@@ -1783,8 +1768,8 @@ const monuments = [
         title: "Instituto del Patrimonio Cultural de España",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=f51b0a11f811e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca/Barrio/CiudadUniversitaria",
+            districtURL: "Moncloa-Aravaca",
+            areaURL: "Ciudad Universitaria",
             locality: "MADRID",
             postalCode: 28040,
             street: "CALLE PINTOR EL GRECO 4"
@@ -1801,8 +1786,8 @@ const monuments = [
         title: "La Casa Encendida",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4418f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28012,
             street: "RONDA VALENCIA 2"
@@ -1819,8 +1804,8 @@ const monuments = [
         title: "Matadero y Mercado Municipal de Granados",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=55c478610b88e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Arganzuela",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Arganzuela/Barrio/Chopera",
+            districtURL: "Arganzuela",
+            areaURL: "Chopera",
             locality: "MADRID",
             postalCode: 28045,
             street: "PASEO CHOPERA 14"
@@ -1837,8 +1822,8 @@ const monuments = [
         title: "Medialab-Prado (antigua Serrería Belga)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6618f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE ALAMEDA 15"
@@ -1855,8 +1840,8 @@ const monuments = [
         title: "Mercado de San Miguel",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2618f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28005,
             street: "Plaza SAN MIGUEL "
@@ -1873,8 +1858,8 @@ const monuments = [
         title: "Ministerio de Agricultura, Pesca y Alimentación",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ed18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "PASEO INFANTA ISABEL 1"
@@ -1891,8 +1876,8 @@ const monuments = [
         title: "Monasterio de las Descalzas Reales",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=af08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "Plaza DESCALZAS "
@@ -1909,8 +1894,8 @@ const monuments = [
         title: "Monasterio de Montserrat",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c618f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28015,
             street: "CALLE SAN BERNARDO 79"
@@ -1927,8 +1912,8 @@ const monuments = [
         title: "Museo Cerralbo",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=64458a205fccc610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca/Barrio/Arguelles",
+            districtURL: "Moncloa-Aravaca",
+            areaURL: "Arguelles",
             locality: "MADRID",
             postalCode: 28008,
             street: "CALLE VENTURA RODRIGUEZ 17"
@@ -1945,8 +1930,8 @@ const monuments = [
         title: "Museo de América",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=aefeb801a201e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca/Barrio/CiudadUniversitaria",
+            districtURL: "Moncloa-Aravaca",
+            areaURL: "Ciudad Universitaria",
             locality: "MADRID",
             postalCode: 28040,
             street: "AVENIDA REYES CATOLICOS 6"
@@ -1963,8 +1948,8 @@ const monuments = [
         title: "Museo de Historia de Madrid. Museo Municipal de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4208f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "CALLE FUENCARRAL 78"
@@ -1981,8 +1966,8 @@ const monuments = [
         title: "Museo del Ferrocarril",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=cf18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Arganzuela",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Arganzuela/Barrio/PalosMoguer",
+            districtURL: "Arganzuela",
+            areaURL: "PalosMoguer",
             locality: "MADRID",
             postalCode: 28045,
             street: "PASEO DELICIAS 1"
@@ -1999,8 +1984,8 @@ const monuments = [
         title: "Museo Lázaro Galdiano",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=eb18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Castellana",
+            districtURL: "Salamanca",
+            areaURL: "Castellana",
             locality: "MADRID",
             postalCode: 28006,
             street: "CALLE SERRANO 122"
@@ -2017,8 +2002,8 @@ const monuments = [
         title: "Museo Nacional Centro de Arte Reina Sofía",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a418f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28012,
             street: "CALLE SANTA ISABEL 52"
@@ -2035,8 +2020,8 @@ const monuments = [
         title: "Museo Nacional de Ciencias Naturales y Escuela Técnica Superior de Ingenieros Industriales",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=db67dfa16a63e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin/Barrio/ElViso",
+            districtURL: "Chamartin",
+            areaURL: "El Viso",
             locality: "MADRID",
             postalCode: 28006,
             street: "CALLE JOSE GUTIERREZ ABASCAL 2"
@@ -2053,8 +2038,8 @@ const monuments = [
         title: "Museo Nacional del Prado",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a128f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "PASEO PRADO 1"
@@ -2071,8 +2056,8 @@ const monuments = [
         title: "Museo Sorolla",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=aa18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi/Barrio/Almagro",
+            districtURL: "Chamberi",
+            areaURL: "Almagro",
             locality: "MADRID",
             postalCode: 28010,
             street: "Paseo GENERAL MARTINEZ CAMPOS 37"
@@ -2089,8 +2074,8 @@ const monuments = [
         title: "Museo Thyssen-Bornemisza (Palacio de Vistahermosa)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=40083d43db3a45103d43db3a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "PASEO PRADO 8"
@@ -2107,8 +2092,8 @@ const monuments = [
         title: "Nuevos Ministerios",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=845f5454dca3e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamberi/Barrio/RiosRosas",
+            districtURL: "Chamberi",
+            areaURL: "RiosRosas",
             locality: "MADRID",
             postalCode: 28003,
             street: "CALLE AGUSTIN DE BETANCOURT 4"
@@ -2125,8 +2110,8 @@ const monuments = [
         title: "Observatorio Astronómico",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6128f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE ALFONSO XII 3"
@@ -2143,10 +2128,9 @@ const monuments = [
         title: "Oficinas para Ramón López-Rumayor Lombera",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0808f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle CONCEPCION ARENAL 1"
         },
         location: {
@@ -2161,10 +2145,9 @@ const monuments = [
         title: "Oficinas para Vicente Patuel",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a908f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle CHINCHILLA 9"
         },
         location: {
@@ -2179,8 +2162,8 @@ const monuments = [
         title: "Palacio de Altamira (Instituto Europeo del Diseño)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0708f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle FLOR ALTA 8"
@@ -2197,8 +2180,8 @@ const monuments = [
         title: "Palacio de Amboage (actual sede de la Embajada de Italia)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=1d4ae77ccd10e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Castellana",
+            districtURL: "Salamanca",
+            areaURL: "Castellana",
             locality: "MADRID",
             postalCode: 28006,
             street: "CALLE LAGASCA 98"
@@ -2215,8 +2198,8 @@ const monuments = [
         title: "Palacio de Biblioteca y Museos Nacionales",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8228f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Recoletos",
+            districtURL: "Salamanca",
+            areaURL: "Recoletos",
             locality: "MADRID",
             postalCode: 28001,
             street: "CALLE SERRANO 13"
@@ -2233,8 +2216,8 @@ const monuments = [
         title: "Palacio de Buena Vista (actual sede del Cuartel General del Ejército de Tierra)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4328f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 51"
@@ -2251,8 +2234,8 @@ const monuments = [
         title: "Palacio de Comunicaciones (Palacio de Cibeles, Ayuntamiento de Madrid)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4128f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "PLAZA CIBELES 1"
@@ -2269,8 +2252,8 @@ const monuments = [
         title: "Palacio de Fernán Nuñez (Fundación de los Ferrocarriles Españoles)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6418f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28012,
             street: "CALLE SANTA ISABEL 44"
@@ -2287,10 +2270,9 @@ const monuments = [
         title: "Palacio de la Música",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6808f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle ABADA 14"
         },
         location: {
@@ -2305,8 +2287,8 @@ const monuments = [
         title: "Palacio de la Prensa",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e708f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "PLAZA CALLAO 4"
@@ -2323,8 +2305,8 @@ const monuments = [
         title: "Palacio de Linares (actual Casa de América)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e128f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "PLAZA CIBELES 1"
@@ -2341,8 +2323,8 @@ const monuments = [
         title: "Palacio de Liria",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8028f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28008,
             street: "CALLE PRINCESA 20"
@@ -2359,8 +2341,8 @@ const monuments = [
         title: "Palacio de Longoria (sede de la Sociedad General de Autores y Editores)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c208f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle FERNANDO VI 4"
@@ -2377,8 +2359,8 @@ const monuments = [
         title: "Palacio de los Duques de Santoña (Cámara de Comercio)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e218f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28012,
             street: "Calle HUERTAS 13"
@@ -2395,8 +2377,8 @@ const monuments = [
         title: "Palacio de Santa Cruz (sede actual del Ministerio de Asuntos Exteriores)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6018f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28012,
             street: "PLAZA PROVINCIA 1"
@@ -2413,8 +2395,8 @@ const monuments = [
         title: "Palacio del Duque de Uceda o Palacio de Consejos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2f08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "CALLE MAYOR 79"
@@ -2431,8 +2413,8 @@ const monuments = [
         title: "Palacio del marqués de Perales (Filmoteca Nacional)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e318f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28012,
             street: "CALLE MAGDALENA 10"
@@ -2449,8 +2431,8 @@ const monuments = [
         title: "Palacio del Marqués de Salamanca",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ce18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Recoletos",
+            districtURL: "Salamanca",
+            areaURL: "Recoletos",
             locality: "MADRID",
             postalCode: 28001,
             street: "Paseo RECOLETOS 10"
@@ -2467,8 +2449,8 @@ const monuments = [
         title: "Palacio Real de El Pardo",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=3de1a8071288e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Fuencarral-ElPardo",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Fuencarral-ElPardo/Barrio/ElPardo",
+            districtURL: "Fuencarral-El Pardo",
+            areaURL: "El Pardo",
             locality: "MADRID",
             postalCode: 28048,
             street: "CALLE MANUEL ALONSO 1"
@@ -2485,8 +2467,8 @@ const monuments = [
         title: "Palacio Real de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2008f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28071,
             street: "Calle BAILEN "
@@ -2503,8 +2485,8 @@ const monuments = [
         title: "Parque de El Retiro",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0528f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28001,
             street: "PLAZA INDEPENDENCIA 7"
@@ -2521,8 +2503,8 @@ const monuments = [
         title: "Parroquia de Nuestra Señora del Tránsito",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6c4e78610b88e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Hortaleza",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Hortaleza/Barrio/Canillas",
+            districtURL: "Hortaleza",
+            areaURL: "Canillas",
             locality: "MADRID",
             postalCode: 28043,
             street: "CARRETERA CANILLAS 40"
@@ -2539,8 +2521,8 @@ const monuments = [
         title: "Parroquia de San Pedro Advincula",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c3a3a7055e78e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/VillaDeVallecas",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/VillaDeVallecas/Barrio/CascoHVallecas",
+            districtURL: "Villa De Vallecas",
+            areaURL: "Casco Histórico de Vallecas",
             locality: "MADRID",
             postalCode: 28031,
             street: "CALLE SIERRA GORDA 5"
@@ -2557,8 +2539,8 @@ const monuments = [
         title: "Parroquia de San Pedro de los Dominicos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=eb0478610b88e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Hortaleza",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Hortaleza/Barrio/Valdefuentes",
+            districtURL: "Hortaleza",
+            areaURL: "Valdefuentes",
             locality: "MADRID",
             postalCode: 28050,
             street: "AVENIDA BURGOS 204"
@@ -2575,8 +2557,8 @@ const monuments = [
         title: "Parroquia de Santa Bárbara",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a228f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "CALLE GENERAL CASTA&amp;Ntilde;OS 2"
@@ -2593,8 +2575,8 @@ const monuments = [
         title: "Parroquia Nuestra Señora de Guadalupe",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=d8cd376edad7e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin/Barrio/Hispanoamerica",
+            districtURL: "Chamartin",
+            areaURL: "Hispanoamerica",
             locality: "MADRID",
             postalCode: 28016,
             street: "CALLE PUERTO RICO 1"
@@ -2611,8 +2593,8 @@ const monuments = [
         title: "Parroquia San Millán y San Cayetano",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0718f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28012,
             street: "Calle EMBAJADORES 15"
@@ -2629,8 +2611,8 @@ const monuments = [
         title: "Plaza de Toros de Las Ventas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e328f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Guindalera",
+            districtURL: "Salamanca",
+            areaURL: "Guindalera",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 237"
@@ -2647,8 +2629,8 @@ const monuments = [
         title: "Plaza Mayor",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2528f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28012,
             street: "Plaza MAYOR "
@@ -2665,9 +2647,7 @@ const monuments = [
         title: "Puente de Segovia",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6428f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Distrito",
             locality: "MADRID",
-            postalCode: "",
             street: "PUENTE SEGOVIA "
         },
         location: {
@@ -2682,9 +2662,7 @@ const monuments = [
         title: "Puente de Toledo",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4428f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Distrito",
             locality: "MADRID",
-            postalCode: "",
             street: "PUENTE TOLEDO "
         },
         location: {
@@ -2699,8 +2677,8 @@ const monuments = [
         title: "Puerta de Alcalá",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2428f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/Jeronimos",
+            districtURL: "Retiro",
+            areaURL: "Jeronimos",
             locality: "MADRID",
             postalCode: 28001,
             street: "Plaza INDEPENDENCIA "
@@ -2717,8 +2695,8 @@ const monuments = [
         title: "Puerta de Toledo",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0428f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28005,
             street: "Glorieta PUERTA DE TOLEDO "
@@ -2735,8 +2713,8 @@ const monuments = [
         title: "Puerta del Sol",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4528f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "PLAZA PUERTA DEL SOL 1"
@@ -2753,8 +2731,8 @@ const monuments = [
         title: "Real Academia de Bellas Artes de San Fernando",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c118f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28014,
             street: "Calle ALCALÁ 13"
@@ -2771,8 +2749,8 @@ const monuments = [
         title: "Real Academia de la Historia",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8318f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE LEON 21"
@@ -2789,8 +2767,8 @@ const monuments = [
         title: "Real Academia Española de la Lengua",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4e18f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE FELIPE IV 4"
@@ -2807,8 +2785,8 @@ const monuments = [
         title: "Real Basílica de San Francisco el Grande",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e028f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28005,
             street: "Gran Vía SAN FRANCISCO 19"
@@ -2825,8 +2803,8 @@ const monuments = [
         title: "Real Casa de Correos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8518f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "PLAZA PUERTA DEL SOL 7"
@@ -2843,8 +2821,8 @@ const monuments = [
         title: "Real Casa de la Aduana (actual sede del Ministerio de Hacienda)",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8718f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE ALCALA 5"
@@ -2861,8 +2839,8 @@ const monuments = [
         title: "Real Colegiata de San Isidro",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8118f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28005,
             street: "CALLE TOLEDO 37"
@@ -2879,8 +2857,8 @@ const monuments = [
         title: "Real Jardín Botánico",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8128f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "PLAZA MURILLO 2"
@@ -2897,8 +2875,8 @@ const monuments = [
         title: "Real Monasterio de la Encarnación",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e418f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "Plaza ENCARNACION 1"
@@ -2915,8 +2893,8 @@ const monuments = [
         title: "Reforma del antiguo edificio de Unión Eléctrica",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=5b43e485f1a2d610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28013,
             street: "CALLE GRAN VIA 4"
@@ -2933,8 +2911,8 @@ const monuments = [
         title: "Residencia de Estudiantes",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=b711078f64c1e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin/Barrio/ElViso",
+            districtURL: "Chamartin",
+            areaURL: "El Viso",
             locality: "MADRID",
             postalCode: 28006,
             street: "CALLE PINAR 21"
@@ -2951,8 +2929,8 @@ const monuments = [
         title: "Restos del Antiguo Palacio del Buen Retiro",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=056bce908a92d610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/LosJeronimos",
+            districtURL: "Retiro",
+            areaURL: "LosJeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "CALLE FELIPE IV 1"
@@ -2969,8 +2947,8 @@ const monuments = [
         title: "Salón del Prado",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6528f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Retiro/Barrio/Jeronimos",
+            districtURL: "Retiro",
+            areaURL: "Jeronimos",
             locality: "MADRID",
             postalCode: 28014,
             street: "Paseo PRADO "
@@ -2987,8 +2965,8 @@ const monuments = [
         title: "Teatro Barceló",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=14ba072df910e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "CALLE BARCELO 11"
@@ -3005,8 +2983,8 @@ const monuments = [
         title: "Teatro María Guerrero",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6228f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle TAMAYO Y BAUS 4"
@@ -3023,8 +3001,8 @@ const monuments = [
         title: "Teatro Real",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6518f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "PLAZA ISABEL II "
@@ -3041,8 +3019,8 @@ const monuments = [
         title: "Teatro Valle-Inclán",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=96e756881493d610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Embajadores",
+            districtURL: "Centro",
+            areaURL: "Embajadores",
             locality: "MADRID",
             postalCode: 28012,
             street: "CALLE VALENCIA 1"
@@ -3059,8 +3037,8 @@ const monuments = [
         title: "Templo de Debod",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=201e4c90b3dcc610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca/Barrio/CasaCampo",
+            districtURL: "Moncloa-Aravaca",
+            areaURL: "Casa de Campo",
             locality: "MADRID",
             postalCode: 28008,
             street: "CALLE FERRAZ 1"
@@ -3077,9 +3055,8 @@ const monuments = [
         title: "Terminal T4",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=194cbd23f57ae610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Distrito",
+            districtURL: "Distrito",
             locality: "MADRID",
-            postalCode: "",
             street: "AEROPUERTO TERMINAL T-4 "
         },
         location: {
@@ -3094,8 +3071,8 @@ const monuments = [
         title: "Torre Castelar",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=a790078f64c1e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Salamanca/Barrio/Castellana",
+            districtURL: "Salamanca",
+            areaURL: "Castellana",
             locality: "MADRID",
             postalCode: 28046,
             street: "PASEO CASTELLANA 50"
@@ -3112,8 +3089,8 @@ const monuments = [
         title: "Torre de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0b592f9156e4d610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Moncloa-Aravaca/Barrio/Arguelles",
+            districtURL: "Moncloa-Aravaca",
+            areaURL: "Arguelles",
             locality: "MADRID",
             postalCode: 28008,
             street: "PLAZA ESPAÑA 18"
@@ -3130,8 +3107,8 @@ const monuments = [
         title: "Torres Blancas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=fd8987c41420e610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Chamartin/Barrio/Prosperidad",
+            districtURL: "Chamartin",
+            areaURL: "Prosperidad",
             locality: "MADRID",
             postalCode: 28002,
             street: "AVENIDA AMERICA 37"
@@ -3148,8 +3125,8 @@ const monuments = [
         title: "Tribunal Superior de Justicia",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=174d227f2186d610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "CALLE GENERAL CASTA&amp;Ntilde;OS 1"
@@ -3166,8 +3143,8 @@ const monuments = [
         title: "Viaducto",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=b666390fd42dc610VgnVCM2000001f4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "CALLE BAILEN 12"
@@ -3184,10 +3161,9 @@ const monuments = [
         title: "Viviendas para Alejandro Santamaría",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2708f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 56"
         },
         location: {
@@ -3202,8 +3178,8 @@ const monuments = [
         title: "Viviendas para el Conde Artaza",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ac08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 11"
@@ -3220,10 +3196,9 @@ const monuments = [
         title: "Viviendas para el conde de Godó",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4808f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 44"
         },
         location: {
@@ -3238,10 +3213,9 @@ const monuments = [
         title: "Viviendas para el Marqués de Cubas y Fontalba",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2908f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GONZALO JIMENEZ DE QUESADA 2"
         },
         location: {
@@ -3256,8 +3230,8 @@ const monuments = [
         title: "Viviendas para el Marqués de Cubas y Fontalba",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6908f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 30"
@@ -3274,10 +3248,9 @@ const monuments = [
         title: "Viviendas para el marqués de Falces",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2818f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle CONCEPCION ARENAL 2"
         },
         location: {
@@ -3292,8 +3265,8 @@ const monuments = [
         title: "Viviendas para el marqués de Urquijo",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0c08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 6"
@@ -3310,8 +3283,8 @@ const monuments = [
         title: "Viviendas para el marqués de Villamayor de Santiago",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2b08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 7"
@@ -3328,10 +3301,9 @@ const monuments = [
         title: "Viviendas para Fernando M. Vidales",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8708f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 52"
         },
         location: {
@@ -3346,10 +3318,9 @@ const monuments = [
         title: "Viviendas para José María Escriña",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=e308f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 69"
         },
         location: {
@@ -3364,10 +3335,9 @@ const monuments = [
         title: "Viviendas para José Pérez Pla",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4408f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle FLOR BAJA 4"
         },
         location: {
@@ -3382,8 +3352,8 @@ const monuments = [
         title: "Viviendas para Juan Giralt de la Porta",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0d08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 17"
@@ -3400,8 +3370,8 @@ const monuments = [
         title: "Viviendas para la Sociedad Inmobiliaria de la Villa de Madrid. Bar Chicote.",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ab08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 12"
@@ -3418,8 +3388,8 @@ const monuments = [
         title: "Viviendas para la Sociedad Inmobiliaria de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8b08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 14"
@@ -3436,8 +3406,8 @@ const monuments = [
         title: "Viviendas para Luis Ocharán Mazas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4d08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 21"
@@ -3454,8 +3424,8 @@ const monuments = [
         title: "Viviendas para Luis y Manuel Mitjans",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=cc08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 13"
@@ -3472,10 +3442,9 @@ const monuments = [
         title: "Viviendas para María Monasterio Arrillaga",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0818f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 36"
         },
         location: {
@@ -3490,8 +3459,8 @@ const monuments = [
         title: "Viviendas para Seguros La Estrella",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=cb08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 10"
@@ -3508,8 +3477,8 @@ const monuments = [
         title: "Viviendas para Seguros La Estrella",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=aa08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 20"
@@ -3526,8 +3495,8 @@ const monuments = [
         title: "Viviendas para Tomás Allende",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ea08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 1"
@@ -3544,10 +3513,9 @@ const monuments = [
         title: "Viviendas y comercios para Francisco Escriña",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6818f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 71"
         },
         location: {
@@ -3562,8 +3530,8 @@ const monuments = [
         title: "Viviendas y oficinas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0608f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle GRAN VIA 51"
@@ -3580,8 +3548,8 @@ const monuments = [
         title: "Viviendas y oficinas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6308f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28015,
             street: "Calle GRAN VIA 80"
@@ -3598,10 +3566,9 @@ const monuments = [
         title: "Viviendas y oficinas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6608f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 45"
         },
         location: {
@@ -3616,10 +3583,9 @@ const monuments = [
         title: "Viviendas y oficinas",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2508f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 60"
         },
         location: {
@@ -3634,8 +3600,8 @@ const monuments = [
         title: "Viviendas y oficinas para el vizconde de Escoriaza",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6a08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 22B"
@@ -3652,10 +3618,9 @@ const monuments = [
         title: "Viviendas y oficinas para Hilario Ruiz",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0408f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle DOCTOR CARRACIDO "
         },
         location: {
@@ -3670,8 +3635,8 @@ const monuments = [
         title: "Viviendas y oficinas para Jesús de Murga",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4a08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle FUENCARRAL 2"
@@ -3688,10 +3653,9 @@ const monuments = [
         title: "Viviendas y oficinas para Jesús Ussia y Cubas y Cine Azul",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8308f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GENERAL MITRE "
         },
         location: {
@@ -3706,10 +3670,9 @@ const monuments = [
         title: "Viviendas y oficinas para José María Cano",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2808f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 42"
         },
         location: {
@@ -3724,8 +3687,8 @@ const monuments = [
         title: "Viviendas y oficinas para José María de Antonio Becerril",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=eb08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Justicia",
+            districtURL: "Centro",
+            areaURL: "Justicia",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle GRAN VIA 8"
@@ -3742,10 +3705,9 @@ const monuments = [
         title: "Viviendas y oficinas para José Pérez Pla",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6508f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 64"
         },
         location: {
@@ -3760,10 +3722,9 @@ const monuments = [
         title: "Viviendas y oficinas para Juan Miralles Sesé",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=6408f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle FLOR BAJA 2"
         },
         location: {
@@ -3778,8 +3739,8 @@ const monuments = [
         title: "Viviendas y oficinas para la Constructora Calpense",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c908f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CHINCHILLA "
@@ -3796,10 +3757,9 @@ const monuments = [
         title: "Viviendas y oficinas para Leopoldo García",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=2608f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 49"
         },
         location: {
@@ -3814,8 +3774,8 @@ const monuments = [
         title: "Viviendas y oficinas para Rafael Calabuig",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4818f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle GRAN VIA 58"
@@ -3832,10 +3792,9 @@ const monuments = [
         title: "Viviendas y oficinas para Ramón Saiz de Carlos",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=8808f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Sol",
+            districtURL: "Centro",
+            areaURL: "Sol",
             locality: "MADRID",
-            postalCode: "",
             street: "Calle GRAN VIA 33"
         },
         location: {
@@ -3850,8 +3809,8 @@ const monuments = [
         title: "Viviendas y oficinas para Santos Suárez y Compañía",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=4608f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Palacio",
+            districtURL: "Centro",
+            areaURL: "Palacio",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle GRAN VIA 47"
@@ -3868,8 +3827,8 @@ const monuments = [
         title: "Viviendas y oficinas para Seguros La Estrella",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=ec08f7d9560a4510f7d9560a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Cortes",
+            districtURL: "Centro",
+            areaURL: "Cortes",
             locality: "MADRID",
             postalCode: 28013,
             street: "Calle CABALLERO DE GRACIA 15"
@@ -3886,8 +3845,8 @@ const monuments = [
         title: "Viviendas y teatro Fontalba para el marqués de Cubas y Fontalba",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=0008723e180a4510723e180a45102e085a0aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro",
-            areaURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Centro/Barrio/Universidad",
+            districtURL: "Centro",
+            areaURL: "Universidad",
             locality: "MADRID",
             postalCode: 28004,
             street: "Calle DESENGAÑO 3"
@@ -3904,9 +3863,7 @@ const monuments = [
         title: "Zoo Aquarium de Madrid",
         relation: "https://patrimonioypaisaje.madrid.es/sites/v/index.jsp?vgnextchannel=83bc3cb702aa4510VgnVCM1000008a4a900aRCRD&vgnextoid=c8eb59843b38e610VgnVCM1000001d4a900aRCRD",
         address: {
-            districtURL: "https://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Distrito",
             locality: "MADRID",
-            postalCode: "",
             street: "COMPLEJO ZOOLOGICO DE LA CASA CAMPO "
         },
         location: {
@@ -3917,9 +3874,29 @@ const monuments = [
     }
 ]
 
-// const users = [
-    
-// ]
+
+
+
+const password1 = "Admin"
+const password2 = "123"
+const salt = bcrypt.genSaltSync(bcryptSalt)
+const hashPass1 = bcrypt.hashSync(password1, salt)
+const hashPass2 = bcrypt.hashSync(password2, salt)
+
+const users = [{
+    username: "Admin",
+    password: hashPass1,
+    role: "Admin"
+},
+    {
+        username: "Amanda",
+        password: hashPass2
+  }  
+]
+
+
+
+
 
 
 Activity.create(activities)
@@ -3927,8 +3904,16 @@ Activity.create(activities)
     .catch(err => console.log('ERROR: ', err))
 
 Monument.create(monuments)
-    .then(allMonumentsCreated => console.log('Se han creado', allMonumentsCreated.length, 'monumentos en la BBDD'))
+    .then(allMonuments => console.log("Se han creado ", allMonuments.length, " monumentos en la BBD"))
+    
     .catch(err => console.log('ERROR: ', err))
+
+
+// User.create(users)
+//     .then(allUsers => console.log('Se han creado', allUsers.length, 'usuarios en la BBDD'))
+//     .catch(err => console.log('ERROR: ', err))
+
+
 
 // close the database
 // mongoose.connection.close()

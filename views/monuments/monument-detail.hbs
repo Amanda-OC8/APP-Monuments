@@ -4,25 +4,31 @@
         <div class="card">
             <div class="card-body">
 
-                <h5 class="card-title">{{title}}</h5>
+                <h5 class="card-title">{{monument.title}}</h5>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p>Ubicación: {{address.street}}, {{address.locality}}.</p>
-                        <p>Distrito: {{address.districtURL}}.</p>
-                        <p>Barrio: {{address.areaURL}}.</p>
-                        <p>Más información en la web del <a href="{{relation}}">ayuntamiento de Madrid</a></p>
+                        <p>Ubicación: {{monument.address.street}}, {{monument.address.locality}}.</p>
+                        <p>Distrito: {{monument.address.districtURL}}.</p>
+                        <p>Barrio: {{monument.address.areaURL}}.</p>
+                        <p>Más información en la web del <a href="{{monument.relation}}">ayuntamiento de Madrid</a></p>
+                        Actividades que puedes realizar aquí:
+                        <ul>
+                            {{#each activities}}
+                            <li><a href="/activities/{{this._id}}">{{this.name}}</a></li>
+                            {{/each}}
+                        </ul>
                     </div>
 
                     <div class="col-sm-8">
                        <div id="ind-map"></div>     
                     </div>
-                </div>
-
-                {{!-- <a href="/activities/edit/{{_id}}" class="btn btn-info">Añade una imagen</a> --}}
                 
+
+        
+                </div>
             </div>
         </div>
-        <a href="/monuments" class="btn btn-info">Volver al índice de monumentos</a> <a href="/activities" class="btn btn-info">Volver al índice de actividades</a>
+       <a href="/monuments/all" class="btn btn-info">Volver a la búsqueda de monumentos</a> <a href="/monuments/all" class="btn btn-info">Volver al índice completo de monumentos</a> <a href="/activities" class="btn btn-info">Volver al índice de actividades</a>
     </div>
 
 </div>
@@ -32,4 +38,4 @@
 {{!-- <script src="/javascripts/styles.js"></script> --}}
 <script src="../javascripts/monument-map.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-aWTwtwJSYxP4WUxuurG6lU-hFEaorWM&callback=initMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=___googlekey___&callback=initMap"></script>

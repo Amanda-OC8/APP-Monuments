@@ -1,0 +1,21 @@
+<h2>Búsqueda de monumentos</h2>
+
+<form action="/monuments/results" method="get">
+    <label>Búsqueda por distrito:</label> <input type="text" name="districtQuery">
+    <label>Búsqueda por barrio:</label> <input type="text" name="areaQuery">
+    <input type="submit" value="Buscar">
+</form>
+
+<div class="row">
+
+    {{#each allMonuments}}
+    <article class="col-md-4">
+        <a href="/monuments/{{_id}}">
+            <h4>{{title}}</h4>
+        </a>
+        <div id="map"></div>
+        <p class="text-secondary">{{address.street}}, {{address.locality}}</p>
+    </article>
+    {{/each}}
+
+</div>

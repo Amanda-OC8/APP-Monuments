@@ -14,7 +14,7 @@ const activitySchema = new Schema({
     minAge: Number,
     maxAge: Number,
     imgURL: String,
-    materials: [String],
+    materials: String,
     owner: [{
         type: Schema.Types.ObjectId,
         ref: "User",

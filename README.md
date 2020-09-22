@@ -17,7 +17,8 @@ GET | /profile/personal-monuments/delete/:id | Eliminar un monumento guardado
 GET | /profile/personal-activities | Ver tus actividades creadas 
 POST | /profile/personal-activities/edit | Editar tus actividades creadas 
 GET | /profile/personal-activities/delete/:id | Eliminar una de tus actividades creadas 
-GET | /monuments | Monumentos 
+GET | /monuments/all | Lista completa de monumentos 
+GET | /monuments | Filtrado de los monumentos por barrios y distritos 
 GET | /monuments/:id | Ver detalles del monumento 
 GET | /activities | Actividades 
 GET | /activities/:id| Detalle actividad 
