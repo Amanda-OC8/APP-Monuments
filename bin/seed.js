@@ -3877,8 +3877,7 @@ const monuments = [
 
 
 
-const password1 = "Admin"
-const password2 = "123"
+
 const salt = bcrypt.genSaltSync(bcryptSalt)
 const hashPass1 = bcrypt.hashSync(password1, salt)
 const hashPass2 = bcrypt.hashSync(password2, salt)
@@ -3909,9 +3908,9 @@ Monument.create(monuments)
     .catch(err => console.log('ERROR: ', err))
 
 
-// User.create(users)
-//     .then(allUsers => console.log('Se han creado', allUsers.length, 'usuarios en la BBDD'))
-//     .catch(err => console.log('ERROR: ', err))
+User.create(users)
+    .then(allUsers => console.log('Se han creado', allUsers.length, 'usuarios en la BBDD'))
+    .catch(err => console.log('ERROR: ', err))
 
 
 

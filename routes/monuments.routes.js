@@ -22,10 +22,23 @@ router.get("/", (req, res, next) => {
 router.get("/results", (req, res, next) => {
     const district = req.query.districtQuery
     const area = req.query.areaQuery
-
     
-    Monument.find({ "districtURL": {  $in: [/district/] }, "address.areaURL": { $in: [/Sol/] }})
-        .then(foundMonuments => console.log(foundMonuments))
+    if (district && area) {
+        Monument.find({ "address.districtURL": { $in: [district] }, "address.areaURL": { $in: [area] } })
+            .then(foundMonuments => res.render("monuments/monument-search", {foundMonuments}))
+            .catch(err => next(err))
+    
+    } else if (district) {
+        Monument.find({ "address.districtURL": { $in: [district] } })
+            .then(foundMonuments => res.render("monuments/monument-search", {foundMonuments}))
+            .catch(err => next(err))
+    } else if (area) {
+        Monument.find({ "address.areaURL": { $in: [area] } })
+            .then(foundMonuments => res.render("monuments/monument-search", {foundMonuments}))
+            .catch(err => next(err))
+    }
+ 
+
 })
 
 
@@ -43,20 +56,6 @@ router.get("/:monument_id",  (req, res, next) => {
     Monument.findById(monumentId)
         .then(foundMonument => {
             
-            // Obtain the district name from the URL to show
-            const districtNameURL = foundMonument.address.districtURL
-            let districtiName = districtNameURL.slice(districtNameURL.indexOf("/Distrito/") + 10)
-            
-            // Obtain the area name from the URL to show
-            const areaNameURL = foundMonument.address.areaURL
-            let areaName = areaNameURL.slice(areaNameURL.indexOf("/Barrio/") + 8)
-
-            //Add an space before each upper case, and trim to cut the extra space before the first letter
-            districtiName = districtiName.replace(/([A-Z])/g, ' $1').trim()
-            areaName = areaName.replace(/([A-Z])/g, ' $1').trim()
-            //Remove the possibles "- " cases
-            foundMonument.address.districtURL = districtiName.replace(/(- )/g, '-')
-            foundMonument.address.areaURL = areaName.replace(/(- )/g, '')
 
             Activity.find({ "monuments": { $in: [monumentId] } })
                 .then(foundActivities => {

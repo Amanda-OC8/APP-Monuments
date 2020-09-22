@@ -41,7 +41,7 @@ router.post("/edit/:act_id", checkLoggedIn,  (req, res, next) => {
             .then(() => res.redirect("/activities"))
             .catch(err => next(err))
     } else {
-        Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials], monuments})
+        Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments})
             .then(() => res.redirect("/activities"))
             .catch(err => next(err))
     }
@@ -68,7 +68,7 @@ router.post("/new", checkLoggedIn, (req, res, next) => {
             .then(() => res.redirect("/activities"))
             .catch(err => next(err))
     } else {
-        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials: [materials], owner, monuments })
+        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, owner, monuments })
             .then(() => res.redirect("/activities"))
             .catch(err => next(err))
     }
