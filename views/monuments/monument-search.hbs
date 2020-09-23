@@ -1,8 +1,25 @@
 <h2>Búsqueda de monumentos</h2>
 
 <form action="/monuments/results" method="get">
-    <label>Búsqueda por distrito:</label> <input type="text" name="districtQuery">
-    <label>Búsqueda por barrio:</label> <input type="text" name="areaQuery">
+    
+    <label>Búsqueda por distrito:</label>
+    <select name="districtQuery">
+        <option value="---">Selecciona</option>
+        {{#each District}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+
+    <label>Búsqueda por barrio:</label> 
+   
+        <select name="areaQuery">
+            <option value="---">Selecciona</option>
+            {{#each Area}}
+            <option value="{{this}}">{{this}}</option>
+            {{/each}}
+        </select>
+ 
+
     <input type="submit" value="Buscar">
 </form>
 

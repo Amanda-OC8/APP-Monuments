@@ -13,30 +13,64 @@ const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.r
 
 
 
-// Search monument for region    
+// Search monument for area and district    
 router.get("/", (req, res, next) => {
+    Monument.find({}, { "address.districtURL": 1, "address.areaURL": 1} )
+        .then(foundElements => {
+            let arrDistrict = foundElements.map(elm => elm.address.districtURL)
+            function uniqueValue(value, index, self) {
+                return self.indexOf(value) === index;
+            }
+            let uniqueDistrict = arrDistrict.filter(uniqueValue);
+
+            let arrArea = foundElements.map(elm => elm.address.areaURL)
+
+            let uniqueArea = arrArea.filter(uniqueValue)
+
+            res.render("monuments/monument-search", {District: uniqueDistrict, Area: uniqueArea})
+        })
+    .catch(err => next(err))
     
-    res.render("monuments/monument-search")
 })
 
 router.get("/results", (req, res, next) => {
+
+    Monument.find({}, { "address.districtURL": 1, "address.areaURL": 1 })
+        .then(foundElements => {
+            let arrDistrict = foundElements.map(elm => elm.address.districtURL)
+            function uniqueValue(value, index, self) {
+                return self.indexOf(value) === index;
+            }
+            let uniqueDistrict = arrDistrict.filter(uniqueValue);
+
+            let arrArea = foundElements.map(elm => elm.address.areaURL)
+
+            let uniqueArea = arrArea.filter(uniqueValue)
+            const areasArr = [uniqueDistrict, uniqueArea]
+            return areasArr
+            
+        })
+        .catch(err => next(err))
+    
     const district = req.query.districtQuery
     const area = req.query.areaQuery
-    
-    if (district && area) {
-        Monument.find({ "address.districtURL": { $in: [district] }, "address.areaURL": { $in: [area] } })
-            .then(foundMonuments => res.render("monuments/monument-search", {foundMonuments}))
-            .catch(err => next(err))
-    
-    } else if (district) {
-        Monument.find({ "address.districtURL": { $in: [district] } })
-            .then(foundMonuments => res.render("monuments/monument-search", {foundMonuments}))
-            .catch(err => next(err))
-    } else if (area) {
-        Monument.find({ "address.areaURL": { $in: [area] } })
-            .then(foundMonuments => res.render("monuments/monument-search", {foundMonuments}))
-            .catch(err => next(err))
+    let searchObj = {}
+
+    if (district != "---" && area != "---") {
+        searchObj = {
+            "address.districtURL": { $in: [district] },
+            "address.areaURL": { $in: [area] }
+        }
+    } else if (area == "---") {
+        searchObj = { "address.districtURL": { $in: [district] } }
+    } else if (district == "---") {
+        searchObj = { "address.areaURL": { $in: [area] } }
     }
+    
+    Monument.find(searchObj)
+        .then(foundMonuments => res.render("monuments/monument-search", {foundMonuments}))
+        .catch(err => next(err))
+    
  
 
 })

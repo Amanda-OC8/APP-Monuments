@@ -14,7 +14,7 @@
 
                     <ul>
                         {{#each user.monuments}}
-                        <li><a href="/monuments/{{this._id}}">{{this.title}}</a></li>
+                        <li><a href="/monuments/{{this._id}}">{{this.title}}</a> || <a href="/profile/remove/{{this._id}}">Quitar de favoritos</a></li>
                         {{/each}}
                     </ul>
     </div>
