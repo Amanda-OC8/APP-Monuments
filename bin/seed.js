@@ -4,7 +4,7 @@ const Monument = require('../models/monuments.model')
 const User = require("../models/user.model")
 
 const dbtitle = 'Monumentos-Madrid'
-mongoose.connect(`mongodb+srv://Amanda:QueAsc0DeTodo@cluster0.tlirb.mongodb.net/test?authSource=admin&replicaSet=atlas-vvf7e9-shard-0&readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=true`, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(`mongodb://localhost/${dbtitle}`, { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.set('useCreateIndex', true)
 
 const bcrypt = require("bcrypt")
