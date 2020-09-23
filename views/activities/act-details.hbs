@@ -8,7 +8,7 @@
                 <h6 class="card-subtitle mb-2 text-muted">Tipo: {{actType}}</h6>
                 <div class="row">
                     <div class="col-sm-4">
-                        <img class="act-detail-img" src="../images/Default.png" alt="Imagen fondo negro con interrogaciones">
+                        <img class="act-detail-img" src="{{imgURL}}" alt="Imagen fondo negro con interrogaciones">
                     </div>
 
                     <div class="col-sm-8">
@@ -18,12 +18,7 @@
                         <p>Número de participantes: de {{minParticipants}} a {{maxParticipants}} personas.</p>
 
                         {{#if materials.length}}
-                        <p>Materiales necesarios</p>
-                        <ul> 
-                            {{#each materials}}
-                            <li>{{this}}</li>
-                            {{/each}}
-                        </ul>
+                        <p>Materiales necesarios: {{materials}}</p>
                         {{/if}}
 
                         {{#if monuments.length}}
@@ -37,10 +32,7 @@
 
                     </div>
                 </div>
-                
-                
-
-
+     
                 <a href="/activities/edit/{{_id}}" class="btn btn-info">Editar</a>
                 <a href="/activities/delete/{{_id}}" class="btn btn-danger">Eliminar</a>
             </div>

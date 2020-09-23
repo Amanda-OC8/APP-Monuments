@@ -4,8 +4,14 @@ const Schema = mongoose.Schema
 const monumentSchema = new Schema({
     jsonURL: String,
     originID: Number,
-    title: String,
-    relation: String,
+    title: {
+        type: String,
+        required: true,
+    },
+    relation: {
+        type: String,
+        required: true,
+    },
     address: {
         districtURL: String,
         areaURL: String,
@@ -14,7 +20,10 @@ const monumentSchema = new Schema({
         street: String
     },
     location: { type: { type: String }, coordinates: [Number] },
-    references: String
+    references: {
+        type: String,
+        required: true,
+    }
 }, {
     timestamps: true
 })

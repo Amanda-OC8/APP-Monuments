@@ -26,11 +26,10 @@ router.get("/:monument_id", (req, res, next) => {
         .then(foundMonument => {
             const { username, pasword, role, monuments, activities } = req.user
             monuments.push(foundMonument)
-            
-            User.findByIdAndUpdate(req.user._id, { username, pasword, role, monuments, activities })
-                .then(() => res.redirect("/profile"))
-                .catch(err=> console.log(err))
+
+            return User.findByIdAndUpdate(req.user._id, { username, pasword, role, monuments, activities })
         })
+        .then(() => res.redirect("/profile"))
         .catch(err => console.log(err))
 })
 
@@ -41,14 +40,11 @@ router.get("/remove/:monument_id", (req, res, next) => {
     Monument.findById(monumentid)
         .then(foundMonument => {
             const { username, pasword, role, monuments, activities } = req.user
-
             newMonuments = monuments.filter(elm => !elm.equals(foundMonument._id))
             
-            User.findByIdAndUpdate(req.user._id, { username, pasword, role, monuments: newMonuments, activities })
-                .then(() => res.redirect("/profile"))
-                .catch(err => console.log(err))
-            
+            return User.findByIdAndUpdate(req.user._id, { username, pasword, role, monuments: newMonuments, activities })  
         })
+        .then(() => res.redirect("/profile"))
         .catch(err => console.log(err))
 })
 

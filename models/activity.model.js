@@ -7,13 +7,34 @@ const activitySchema = new Schema({
         type: String,
         enum: ["Busqueda", "Carrera", "Pistas", "Trivial"]
     },
-    shortDescription: String,
+    shortDescription: {
+        type: String,
+        required: true
+    },
     longDescription: String,
-    minParticipants: Number,
-    maxParticipants: Number,
-    minAge: Number,
-    maxAge: Number,
-    imgURL: String,
+    minParticipants: {
+        type: Number,
+        required: true
+    },
+    maxParticipants: {
+        type: Number,
+        required: true
+    },
+    minAge: {
+        type: Number,
+        required: true,
+        minimum: 6
+    },
+    maxAge: {
+        type: Number,
+        required: true,
+        minimum: 11
+    },
+    imgURL: {
+        type: String,
+        required: true,
+        default: "../images/Default.png"
+    },
     materials: String,
     owner: [{
         type: Schema.Types.ObjectId,

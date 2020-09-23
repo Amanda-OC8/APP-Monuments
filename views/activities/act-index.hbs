@@ -2,7 +2,9 @@
 <div class="row">
     {{#each allAct}}
     <article class="col-md-4">
-        <a href="/activities/{{_id}}"><h4>{{name}}</h4></a>
+        <a href="/activities/{{_id}}">
+            <h4>{{name}}</h4>
+        </a>
         <p>{{shortDescription}}</p>
         <p class="text-secondary">{{actType}}</p>
     </article>

@@ -1,65 +1,50 @@
-function printCharts(coasters) {
+getMonumentDataFromAPI()
 
-    // Remove loading message, show chart panels 
-    document.body.classList.add('running')
+function getMonumentDataFromAPI() {
 
-    // Call each chart function passing the coasters and DOM Canvas tag ID to be rendered
-    compareRadialChart(coasters, 'chart2')
-    modelDoughnutChart(coasters, 'chart4')
-    heightRadarChart(coasters, 'chart3')
+    axios.get('/api/monument/')
+        .then(response => printCharts(response.data))
+        .catch(err => console.log('Hubo un error:', err))
+}
+
+
+function printCharts(monument) {
+  
+    modelDoughnutChart(monument, "districtChart")
+    
 
 }
 
-var myPieChart = new Chart(ctx, {
-    type: 'pie',
-    data: data,
-    options: options
-})
 
-function compareRadialChart(coasters, id) {
 
-    // Every ChartJS chart needs data with labels and datasets
+function modelDoughnutChart(monument, id) {
+    // Array with all the districts
+    let arrDistrict = monument.map(elm => elm.address.districtURL)
+    
+    //Create an object where the key is the district name and their value, the numbers of times that appears
+    let districtDistr = {};
+    arrDistrict.forEach(elm => districtDistr[elm] = (districtDistr[elm] || 0) + 1)
+    
+
     const data = {
-        labels: ['EEUU', 'UK', 'España', 'Japón', 'China'],
-        datasets: [   // datasets is an Array of Objects, each Object contains one set of info/styles to be shown. In many charts, multiple sets of info can be rendered if multiple Objets are passed to the datasets Array
+        labels: Object.keys(districtDistr),
+        datasets: [
             {
-                data: [
-                    coasters.filter(eachCoaster => eachCoaster.country === 'United States').length,
-                    coasters.filter(eachCoaster => eachCoaster.country === 'United Kingdom').length,
-                    coasters.filter(eachCoaster => eachCoaster.country === 'Spain').length,
-                    coasters.filter(eachCoaster => eachCoaster.country === 'Japan').length,
-                    coasters.filter(eachCoaster => eachCoaster.country === 'China').length
-                ],
-                borderWidth: 1,
-                borderColor: styles.color.solids.map(eachColor => eachColor),
-                backgroundColor: styles.color.alphas.map(eachColor => eachColor)
+                data: Object.values(districtDistr),
+                               
             }
         ]
     }
 
-    // Every ChartJs chart can have multiple layout options
     const options = {
-        scale: {
-            gridLines: {
-                color: '#444'
-            },
-            ticks: {
-                display: false
-            }
-        },
         legend: {
             position: 'right',
             labels: {
-                fontColor: '#fff'
+                fontColor: '#000'
             }
         }
     }
 
-    // Every ChartJS chart receives two arguments: the Canvas id to place the chart, and an object with: chart type, data to show, layout options object (optional)
-    new Chart(id, { type: 'polarArea', data, options })
+    new Chart(id, { type: 'doughnut', data, options })
 }
-
-
-
-
 

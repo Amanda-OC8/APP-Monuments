@@ -11,47 +11,32 @@ const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.r
   
 
 
-
-
 // Search monument for area and district    
 router.get("/", (req, res, next) => {
-    Monument.find({}, { "address.districtURL": 1, "address.areaURL": 1} )
-        .then(foundElements => {
-            let arrDistrict = foundElements.map(elm => elm.address.districtURL)
-            function uniqueValue(value, index, self) {
-                return self.indexOf(value) === index;
-            }
-            let uniqueDistrict = arrDistrict.filter(uniqueValue);
 
-            let arrArea = foundElements.map(elm => elm.address.areaURL)
-
-            let uniqueArea = arrArea.filter(uniqueValue)
-
-            res.render("monuments/monument-search", {District: uniqueDistrict, Area: uniqueArea})
-        })
-    .catch(err => next(err))
-    
-})
-
-router.get("/results", (req, res, next) => {
-
+    // Get the districts and areas of each monument
     Monument.find({}, { "address.districtURL": 1, "address.areaURL": 1 })
         .then(foundElements => {
             let arrDistrict = foundElements.map(elm => elm.address.districtURL)
-            function uniqueValue(value, index, self) {
-                return self.indexOf(value) === index;
-            }
-            let uniqueDistrict = arrDistrict.filter(uniqueValue);
+            const setDistrict = new Set(arrDistrict)
+            const uniqueDistrict = Array.from(setDistrict)
 
             let arrArea = foundElements.map(elm => elm.address.areaURL)
+            const setArea = new Set(arrArea)
+            const uniqueArea = Array.from(setArea)
 
-            let uniqueArea = arrArea.filter(uniqueValue)
             const areasArr = [uniqueDistrict, uniqueArea]
-            return areasArr
-            
+           
+            res.render("monuments/monument-search", { District: areasArr[0], Area: areasArr[1] })
         })
         .catch(err => next(err))
-    
+
+  
+})
+
+// Show the results
+router.get("/results", (req, res, next) => {
+
     const district = req.query.districtQuery
     const area = req.query.areaQuery
     let searchObj = {}
@@ -66,17 +51,32 @@ router.get("/results", (req, res, next) => {
     } else if (district == "---") {
         searchObj = { "address.areaURL": { $in: [area] } }
     }
+
+    // Create promises
+    const filterListPromise = Monument.find({}, { "address.districtURL": 1, "address.areaURL": 1 })
+    const filterMonumentsPromise = Monument.find(searchObj)
     
-    Monument.find(searchObj)
-        .then(foundMonuments => res.render("monuments/monument-search", {foundMonuments}))
+    Promise.all([filterListPromise, filterMonumentsPromise])
+        .then(results => {
+            //Get the districts and areas again
+            let arrDistrict = results[0].map(elm => elm.address.districtURL)
+            const setDistrict = new Set(arrDistrict)
+            const uniqueDistrict = Array.from(setDistrict)
+
+            let arrArea = results[0].map(elm => elm.address.areaURL)
+            const setArea = new Set(arrArea)
+            const uniqueArea = Array.from(setArea)
+
+            const areasArr = [uniqueDistrict, uniqueArea]
+            res.render("monuments/monument-search", { foundMonuments: results[1], District: areasArr[0], Area: areasArr[1]  })
+        })
         .catch(err => next(err))
     
  
-
 })
 
 
-
+// Show all monuments
 router.get("/all", (req, res, next) => {
 
     Monument.find()
@@ -86,21 +86,13 @@ router.get("/all", (req, res, next) => {
 
 router.get("/:monument_id",  (req, res, next) => {
     const monumentId = req.params.monument_id
-    
-    Monument.findById(monumentId)
-        .then(foundMonument => {
-            
 
-            Activity.find({ "monuments": { $in: [monumentId] } })
-                .then(foundActivities => {
-                    res.render("monuments/monument-detail", { monument: foundMonument, activities: foundActivities })
-                }) 
-                .catch(err => console.log(err))
-            
-            
-        })
-        .catch(err => console.log(err))
+    const monumentPromise = Monument.findById(monumentId)
+    const activityPromise = Activity.find({ "monuments": { $in: [monumentId] } })
 
+    Promise.all([monumentPromise, activityPromise])
+        .then(results => res.render('monuments/monument-detail', { monument: results[0], activities: results[1] }))
+        .catch(err => next(err))
     
 })
 

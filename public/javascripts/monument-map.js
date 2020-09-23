@@ -6,7 +6,7 @@ function initMap() {
 
 function getPlaceDataFromAPI() {
 
-  axios.get('/api/')
+  axios.get('/api/monument/')
     .then(response => drawMap(response.data) )
     .catch(err => console.log('Hubo un error:', err))
 }

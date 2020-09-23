@@ -5,7 +5,6 @@ const Activity = require("../models/activity.model")
 const Monument = require("../models/monuments.model")
 
 // Middleware config for the loggin authentication 
-
 const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.render('index', { loginErrorMessage: 'Acceso restringido' })
 
 
@@ -18,12 +17,12 @@ router.get("/", checkLoggedIn,  (req, res, next) => {
     }
 )
 
-//Edit activity
+//Edit activity with the monument information
 router.get("/edit/:act_id", checkLoggedIn, (req, res, next) => {
     const actId = req.params.act_id
 
     const activityPromise = Activity.findById(actId)
-    const monumentPromise = Monument.find()
+    const monumentPromise = Monument.find({}, {"title": 1})
 
     Promise.all([activityPromise, monumentPromise])
         .then(results => res.render("activities/act-edit", { activity: results[0], monuments: results[1] }))
@@ -35,16 +34,9 @@ router.post("/edit/:act_id", checkLoggedIn,  (req, res, next) => {
     const actId = req.params.act_id
     const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments } = req.body
 
-    if (!materials.length) {
-
-        Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, monuments })
-            .then(() => res.redirect("/activities"))
-            .catch(err => next(err))
-    } else {
-        Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments})
-            .then(() => res.redirect("/activities"))
-            .catch(err => next(err))
-    }
+    Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments})
+        .then(() => res.redirect("/activities"))
+        .catch(err => next(err))
 
 })
 
@@ -52,7 +44,7 @@ router.post("/edit/:act_id", checkLoggedIn,  (req, res, next) => {
 router.get("/new", checkLoggedIn, (req, res, next) => {
 
     //Load all the monuments to the view
-    Monument.find()
+    Monument.find({}, {"title": 1} )
         .then(allMonuments => res.render("activities/act-new", { allMonuments }))
         .catch(err=> next(err))
     
@@ -60,24 +52,18 @@ router.get("/new", checkLoggedIn, (req, res, next) => {
 
 router.post("/new", checkLoggedIn, (req, res, next) => {
     const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments } = req.body
-    const owner =req.user._id
+    const owner = req.user._id
 
-    if (!materials.length) {
-
-        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, owner, monuments })
-            .then(() => res.redirect("/activities"))
-            .catch(err => next(err))
-    } else {
-        Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, owner, monuments })
-            .then(() => res.redirect("/activities"))
-            .catch(err => next(err))
-    }
+    Activity.create({ name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, owner, monuments })
+        .then(() => res.redirect("/activities"))
+        .catch(err => next(err))
 
 })
 
 //Delete activity
 router.get("/delete/:act_id", checkLoggedIn, (req, res, next) => {
     const actId = req.params.act_id
+    
     Activity.findByIdAndDelete(actId)
         .then(() => res.redirect("/activities"))
         .catch(err => next(err))
