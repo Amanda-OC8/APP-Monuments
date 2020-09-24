@@ -1,15 +1,17 @@
 <h2>Búsqueda de monumentos</h2>
 
-<form action="/monuments/results" method="get">
-    
-    <label>Búsqueda por distrito:</label>
-    <select name="districtQuery">
-        <option value="---">Selecciona</option>
-        {{#each District}}
-        <option value="{{this}}">{{this}}</option>
-        {{/each}}
-    </select>
+<form action="/monuments/results" method="get" class="row  justify-content-center">
+    <div class= "col-md-6">
+        <label>Búsqueda por distrito:</label>
+        <select name="districtQuery">
+            <option value="---">Selecciona</option>
+            {{#each District}}
+            <option value="{{this}}">{{this}}</option>
+            {{/each}}
+        </select>
+    </div>
 
+    <div class="col-md-6">
     <label>Búsqueda por barrio:</label> 
    
         <select name="areaQuery">
@@ -18,21 +20,15 @@
             <option value="{{this}}">{{this}}</option>
             {{/each}}
         </select>
- 
+    </div>
 
-    <input type="submit" value="Buscar">
+    <input type="submit" value="Buscar" class="btn btn-edit btn-block">
 </form>
 
 <div class="row">
 
     {{#each foundMonuments}}
-    <article class="col-md-4">
-        <a href="/monuments/{{_id}}">
-            <h4>{{title}}</h4>
-        </a>
-        <div id="map"></div>
-        <p class="text-secondary">{{address.street}}, {{address.locality}}</p>
-    </article>
+    {{> monumentPartial}}
     {{/each}}
 
 </div>

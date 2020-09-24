@@ -1,24 +1,31 @@
 <h2>Estadísticas</h2>
-<div class="row">
-    <div class="col-sg-10">
-    <h3>Estadísticas de los monumentos</h3>
-    <p>Distribución de los monumentos por distritos y barrios</p>
-    </div>
-    <canvas id="districtChart" ></canvas>
-    <canvas id="areaChart"></canvas>
+
+    
+    <h3>Estadísticas de las actividades</h3>
+    <p class="chart-title">Distribución por edades</p>
+   
+    {{!-- <canvas id="districtChart" ></canvas>
+    <canvas id="areaChart"></canvas> --}}
     <canvas id="ageChart"></canvas>
+
+    <p class="chart-title">Distribución por número mínimo de participantes</p>
     <canvas id="participantsChart"></canvas>
 
-</div>
 
+
+<h2>Mapa de todos los monumentos</h2>
+
+    <div id="all-map"></div>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <!-- ChartJS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 
-<!-- Styles for charts -->
-{{!-- <script src="js/chartStyles.js"></script> --}}
 
 <!-- DCharts development -->
 <script src="../javascripts/charts.js"></script>
 
+
+<script src="../javascripts/all-monument-map.js"></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDylhZMngisctyEb2CAWFC1xASfx2SV7m4&callback=initMap"></script>

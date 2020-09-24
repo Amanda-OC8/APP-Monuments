@@ -1,14 +1,9 @@
 <h2>Actividades</h2>
 <div class="row">
     {{#each allAct}}
-    <article class="col-md-4">
-        <a href="/activities/{{_id}}">
-            <h4>{{name}}</h4>
-        </a>
-        <p>{{shortDescription}}</p>
-        <p class="text-secondary">{{actType}}</p>
-    </article>
+    
+       {{> actPartial}}
     {{/each}}
    
 </div>
-<a href="/activities/new" class="btn btn-info">Crea una actividad</a>
+<a href="/activities/new" class="btn btn-edit btn-block">Crea una actividad</a>

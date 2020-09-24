@@ -4,12 +4,12 @@
 
         <div class='form-group'>
             <label><strong>Nombre:</strong></label>
-            <input type='text' name='name'>
+            <input type='text' name='name' required>
         </div>	
 
         <div class='form-group'>
             <label><strong>Tipo de actividad:</strong> </label>
-            <select name='actType'> 
+            <select name='actType' required> 
                 <option value="Busqueda">Búsqueda</option>
                 <option value="Carrera">Carrera</option>
                 <option value="Pistas">Pistas</option>
@@ -19,24 +19,24 @@
 
         <div class='form-group'>
             <label><strong>Descripción corta: </strong></label>
-            <input type='text' name='shortDescription'>
+            <input type='text' name='shortDescription' required>
         </div>
                 
         <div class='form-group'>
             <label><strong>Descripción larga:</strong> </label> <br>
-            <textarea rows = "5" cols = "40" name='longDescription'></textarea>
+            <textarea rows = "5" name='longDescription'></textarea>
         </div>
         
 
         <div class='form-group'>
             <label><strong>Participantes:</strong> </label><br>
-            <label>Mínimo: </label><input class="form-num" type='number' name='minParticipants' > <label>Máximo: </label><input class="form-num" type='number' name='maxParticipants' >
+            <label>Mínimo: </label><input class="form-num" type='number' name='minParticipants' required> <label>Máximo: </label><input class="form-num" type='number' name='maxParticipants' required>
         </div>
 
          <div class='form-group'>
             <label><strong>Edades recomendadas:</strong> </label><br>
-            <label>Mínima: </label><input class="form-num" type='number' name='minAge'>
-            <label>Máxima: </label><input class="form-num" type='number' name='maxAge'>
+            <label>Mínima: </label><input class="form-num" type='number' name='minAge' required>
+            <label>Máxima: </label><input class="form-num" type='number' name='maxAge' required>
         </div>
 
 
@@ -45,25 +45,18 @@
             <input type='text' name='materials'>
         </div>
 
-
-        <div class='form-group'>
+        <div class='form-group row'>
             <label><strong>Monumento(s) donde se puede realizar.</strong> Puedes seleccionar varios</label><br>
-                <select name="monuments" multiple>                  
-                        {{#each allMonuments}}
-                        <option value="{{_id}}">{{title}}</option>
-                        {{/each}}
-                </select>
+            {{#each allMonuments}}
+            <div class="col-sm-12">
+                <input type="checkbox" name="monuments" value="{{_id}}"> {{title}}
+            </div>
 
-                {{!-- <ul>
-                    {{#each allMonuments}}
-                    <li> <input type="checkbox" name="{{this._id}}">{{this.title}}</li>
-                    {{/each}}
-                </ul> --}}
+            {{/each}}
 
-        
         </div>
+        
 
 
-
-    <button type='submit' class='btn btn-info'>Crear</button>
+    <button type='submit' class='btn btn-edit btn-block'>Crear</button>
 </form>

@@ -1,4 +1,4 @@
-getMonumentDataAndPlot()
+// getMonumentDataAndPlot()
 getActivityDataAndPlot()
 
 function getMonumentDataAndPlot() {
@@ -114,16 +114,23 @@ function agesChart(act, id) {
         (maxAge[i] < 7) ? rangeMaxAge[0]++ : (maxAge[i] >= 7 && maxAge[i] <= 11) ? rangeMaxAge[1]++ : (maxAge[i] >= 12 && maxAge[i] <= 15) ? rangeMaxAge[2]++ : (maxAge[i] >= 16 && maxAge[i] <= 18) ? rangeMaxAge[3]++ : (maxAge[i] >= 19) ? rangeMaxAge[4]++ : null
         
     }
+    const colors = ["rgba(255, 10, 20, 0.5)", "rgba(15, 255, 10, 0.5)", "rgba(5, 20, 255, 0.5)", "rgba(181, 67, 255, 0.5)", "rgba( 255, 161, 67 , 0.5)"]
 
     const data = {
         labels: ["<7 años", "7-11 años", "12-15 años", "16-18 años", ">19 años"],
         datasets: [{
-            label: 'Edad mínima',
+            label: 'Mínima',
             data: rangeMinAge,
+            backgroundColor: colors,
+            borderColor: colors,
+            borderWidth: 1
         },
             {
-                label: 'Edadmáxima',
+                label: 'Máxima',
                 data: rangeMaxAge,
+                backgroundColor: colors,
+                borderColor: colors,
+                borderWidth: 1
             }
         ]
     }
@@ -136,5 +143,40 @@ function agesChart(act, id) {
         }
     }
 
-    new Chart(id, { type: 'radar', data, options })
+    new Chart(id, { type: 'bar', data, options })
+}
+
+function participantsChart(act, id) {
+    let minParticipants = act.map(elm => elm.minParticipants)
+    let maxParticipants = act.map(elm => elm.maxParticipants)
+
+    let rangeMinParticipants = [0, 0, 0, 0]
+
+    for (let i = 0; i < minParticipants.length; i++) {
+        (minParticipants[i] < 5) ? rangeMinParticipants[0]++ : (minParticipants[i] >= 6 && minParticipants[i] <= 10) ? rangeMinParticipants[1]++ : (minParticipants[i] >= 11 && minParticipants[i] <= 16) ? rangeMinParticipants[2]++ : (minParticipants[i] >= 17) ? rangeMinParticipants[3]++ : null
+
+    }
+
+    const colors = ["rgba(255, 10, 20, 0.5)", "rgba(15, 255, 10, 0.5)", "rgba(5, 20, 255, 0.5)", "rgba(181, 67, 255, 0.5)"]
+    const data = {
+        labels: ["<5", "6-10", "11-16", ">17"],
+        datasets: [{
+            label: 'Mínimo',
+            data: rangeMinParticipants,
+            backgroundColor: colors,
+            borderColor: colors,
+            borderWidth: 1
+        }
+        ]
+    }
+    const options = {
+        legend: {
+            position: 'right',
+            labels: {
+                fontColor: '#000'
+            }
+        }
+    }
+
+    new Chart(id, { type: 'doughnut', data, options })
 }

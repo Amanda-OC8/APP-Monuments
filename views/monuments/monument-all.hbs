@@ -1,14 +1,10 @@
 <h2>Monumentos</h2>
-<a href="/monuments">Busqueda de monumentos</a>
+<a href="/monuments" class="btn btn-edit btn-block">Busqueda de monumentos por zona</a>
 <div class="row">
+    
     {{#each allMonuments}}
-    <article class="col-md-4">
-        <a href="/monuments/{{_id}}">
-            <h4>{{title}}</h4>
-        </a>
-        <div id="map"></div>
-        <p class="text-secondary">{{address.street}}, {{address.locality}}</p>
-    </article>
+        {{> monumentPartial}}
     {{/each}}
 
 </div>
+

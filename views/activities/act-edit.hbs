@@ -1,15 +1,15 @@
 <h3>Editar la actividad {{activity.name}}</h3>
 
-<form action='/activities/edit/{{activity._id}}' method='POST'>
+<form action='/activities/edit/{{activity._id}}' method='POST' class="container">
 
         <div class='form-group'>
             <label><strong>Nombre:</strong></label>
-            <input type='text' name='name' value="{{activity.name}}">
+            <input type='text' name='name' value="{{activity.name}}" required>
         </div>	
 
         <div class='form-group'>
             <label><strong>Tipo de actividad:</strong> </label>
-            <select name='actType'> 
+            <select name='actType' required> 
                 <option value="Busqueda">Búsqueda</option>
                 <option value="Carrera">Carrera</option>
                 <option value="Pistas">Pistas</option>
@@ -19,24 +19,24 @@
 
         <div class='form-group'>
             <label><strong>Descripción corta: </strong></label>
-            <input type='text' name='shortDescription' value="{{activity.shortDescription}}">
+            <input type='text' name='shortDescription' value="{{activity.shortDescription}}" required>
         </div>
                 
         <div class='form-group'>
             <label><strong>Descripción larga:</strong> </label> <br>
-            <textarea rows = "5" cols = "40" name='longDescription'>{{activity.longDescription}}</textarea>
+            <textarea rows = "5"  name='longDescription'>{{activity.longDescription}}</textarea>
         </div>
         
 
         <div class='form-group'>
             <label><strong>Participantes:</strong> </label><br>
-            <label>Mínimo: </label><input class="form-num" type='number' name='minParticipants' value="{{activity.minParticipants}}"> <label>Máximo: </label><input class="form-num" type='number' name='maxParticipants' value="{{activity.maxParticipants}}">
+            <label>Mínimo: </label><input class="form-num" type='number' name='minParticipants' value="{{activity.minParticipants}}" required> <label>Máximo: </label><input class="form-num" type='number' name='maxParticipants' value="{{activity.maxParticipants}}" required>
         </div>
 
          <div class='form-group'>
             <label><strong>Edades recomendadas:</strong> </label><br>
-            <label>Mínima: </label><input class="form-num" type='number' name='minAge' value="{{activity.minAge}}">
-            <label>Máxima: </label><input class="form-num" type='number' name='maxAge' value="{{activity.maxAge}}">
+            <label>Mínima: </label><input class="form-num" type='number' name='minAge' value="{{activity.minAge}}" required>
+            <label>Máxima: </label><input class="form-num" type='number' name='maxAge' value="{{activity.maxAge}}" required>
         </div>
 
 
@@ -46,22 +46,16 @@
         </div>
 
 
-        <div class='form-group'>
+        <div class='form-group row'>
             <label><strong>Monumento(s) donde se puede realizar.</strong> Puedes seleccionar varios</label><br>
-                <select name="monuments" multiple>                  
-                        {{#each monuments}}
-                        <option value="{{_id}}">{{title}}</option>
-                        {{/each}}
-                </select>
+        {{#each monuments}}
+            <div class="col-sm-12">
+                <input type="checkbox" name="monuments" value="{{_id}}"> {{title}}
+            </div>
+           
+            {{/each}}
 
-                {{!-- <ul>
-                    {{#each allMonuments}}
-                    <li> <input type="checkbox" name="{{this._id}}">{{this.title}}</li>
-                    {{/each}}
-                </ul> --}}
-
-        
         </div>
 
-    <button type='submit' class='btn btn-info'>Editar</button>
+    <button type='submit' class='btn btn-edit btn-block'>Editar</button>
 </form>

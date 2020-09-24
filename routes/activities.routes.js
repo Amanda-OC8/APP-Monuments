@@ -18,7 +18,7 @@ router.get("/", checkLoggedIn,  (req, res, next) => {
 )
 
 //Edit activity with the monument information
-router.get("/edit/:act_id", checkLoggedIn, (req, res, next) => {
+router.get("/edit/:act_id", (req, res, next) => {
     const actId = req.params.act_id
 
     const activityPromise = Activity.findById(actId)
@@ -30,9 +30,10 @@ router.get("/edit/:act_id", checkLoggedIn, (req, res, next) => {
 
 })
 
-router.post("/edit/:act_id", checkLoggedIn,  (req, res, next) => {
+router.post("/edit/:act_id",   (req, res, next) => {
     const actId = req.params.act_id
     const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments } = req.body
+
 
     Activity.findByIdAndUpdate(actId, { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments})
         .then(() => res.redirect("/activities"))
