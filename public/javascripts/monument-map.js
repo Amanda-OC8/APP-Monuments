@@ -33,8 +33,9 @@ function drawMap(monument) {
       zoom: 14,
           }
   )
-
-      new google.maps.Marker({ map, position: center })
+  // Costum icon
+  const icon = { url: "../images/ubicacion.png", scaledSize: new google.maps.Size(40, 40) }
+      new google.maps.Marker({ map, position: center, icon })
 
 
 }

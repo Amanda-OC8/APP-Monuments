@@ -9,16 +9,16 @@ const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.r
 
 
 //Index
-router.get("/", checkLoggedIn,  (req, res, next) => {
+router.get("/", checkLoggedIn, (req, res, next) => {
 
-    Activity.find()
+    Activity.find({}, {"name": 1, "shortDescription": 1, "actType": 1})
         .then(allAct => res.render("activities/act-index", { allAct }))
         .catch(err => next(err))
     }
 )
 
 //Edit activity with the monument information
-router.get("/edit/:act_id", (req, res, next) => {
+router.get("/edit/:act_id", checkLoggedIn, (req, res, next) => {
     const actId = req.params.act_id
 
     const activityPromise = Activity.findById(actId)
@@ -30,7 +30,7 @@ router.get("/edit/:act_id", (req, res, next) => {
 
 })
 
-router.post("/edit/:act_id",   (req, res, next) => {
+router.post("/edit/:act_id", checkLoggedIn,  (req, res, next) => {
     const actId = req.params.act_id
     const { name, actType, shortDescription, longDescription, minParticipants, maxParticipants, minAge, maxAge, materials, monuments } = req.body
 

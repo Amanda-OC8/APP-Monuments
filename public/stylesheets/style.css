@@ -1,61 +1,83 @@
+/* Color palette
+
+ //CSS HEX 
+--navy-blue: #03045eff;
+--dark-cornflower-blue: #023e8aff;
+--star-command-blue: #0077b6ff;
+--blue-green: #0096c7ff;
+--cerulean-crayola: #00b4d8ff;
+--sky-blue-crayola: #48cae4ff;
+--sky-blue-crayola-2: #90e0efff;
+--blizzard-blue: #ade8f4ff;
+--powder-blue: #caf0f8ff;
+
+// SCSS Gradient 
+$gradient-top: linear-gradient(0deg, #03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+$gradient-right: linear-gradient(90deg, #03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+$gradient-bottom: linear-gradient(180deg, #03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+$gradient-left: linear-gradient(270deg, #03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+$gradient-top-right: linear-gradient(45deg, #03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+$gradient-bottom-right: linear-gradient(135deg, #03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+$gradient-top-left: linear-gradient(225deg, #03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+$gradient-bottom-left: linear-gradient(315deg, #03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+$gradient-radial: radial-gradient(#03045eff, #023e8aff, #0077b6ff, #0096c7ff, #00b4d8ff, #48cae4ff, #90e0efff, #ade8f4ff, #caf0f8ff);
+*/
+/* General styles */
 body {
   font-weight: 200;
   background-color: #caf0f8ff;
   color: #03045eff; }
 
+main {
+  margin-bottom: 40px; }
+
 h1, h2, h3 {
   font-weight: 200; }
-
-.navbar {
-  margin-bottom: 70px;
-  background-color: #023e8aff;
-  color: #90e0efff; }
-
-input:not(:placeholder-shown), textarea:not(:placeholder-shown), select:not(:placeholder-shown) {
-  background-color: #EDFAFD !important; }
-
-.card {
-  border: 1px solid #90e0efff; }
-
-.card-body {
-  background-color: #DAF5FB; }
-
-.form-num {
-  width: 50px;
-  border: none;
-  padding: auto 10px;
-  text-align: center; }
-
-.act-detail-img {
-  width: 90%; }
 
 a {
   color: #0077b6ff; }
 
-canvas {
-  width: 100%;
-  margin-bottom: 20px; }
+/*Nav bar styles */
+.navbar {
+  margin-bottom: 10px;
+  background-color: #023e8aff;
+  color: #ade8f4ff; }
+
+.nav-item {
+  text-align: right; }
+
+/* Card styles */
+.card {
+  border: 1px solid #90e0efff;
+  margin-top: 20px; }
+
+.card-body {
+  background-color: #DAF5FB; }
+
+.text-subt {
+  color: #0077b6ff; }
+
+.act-detail-img {
+  width: 90%; }
 
 article {
   margin: 10px auto; }
 
-.chart-title {
-  font-weight: 600;
+/* Footer styles*/
+.footer {
+  padding: 20px 20px;
+  background-color: #023e8aff;
+  color: #90e0efff;
   text-align: center;
-  margin-top: 10px; }
+  display: block; }
 
-#ind-map, #all-map {
-  height: 500px; }
+.footer p {
+  margin-bottom: 0; }
 
-#errorMsg {
-  background-color: red;
-  color: white;
-  font-weight: 500;
-  text-align: center;
-  padding: 10px 0;
-  margin-top: 5px;
-  border-radius: 6px; }
+.footer a {
+  color: #EDFAFD; }
 
+/* Components: buttons*/
 .btn-color {
   box-shadow: inset 0px 1px 0px 0px #caf0f8ff;
   background: radial-gradient(#03045eff 5%, #0247A1 100%);
@@ -103,18 +125,59 @@ article {
   margin: 10px auto;
   width: 90%; }
 
+/* Components: forms */
+input:not(:placeholder-shown), textarea:not(:placeholder-shown), select:not(:placeholder-shown) {
+  background-color: #EDFAFD !important; }
+
+.form-num {
+  width: 50px;
+  border: none;
+  padding: auto 10px;
+  text-align: center; }
+
+#errorMsg {
+  background-color: red;
+  color: white;
+  font-weight: 500;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 5px;
+  border-radius: 6px; }
+
+/* Components maps and charts */
+canvas {
+  width: 100%;
+  margin-bottom: 20px; }
+
+.chart-title {
+  font-weight: 600;
+  text-align: center;
+  margin-top: 10px; }
+
+#ind-map, #all-map {
+  height: 500px; }
+
 /* Responsive */
 @media (min-width: 768px) {
+  .footer {
+    margin-top: 50px;
+    padding: 15px 30px; }
   .btn-block {
     margin: 10px auto;
     width: 80%; } }
 
 @media (min-width: 962px) {
+  .footer {
+    margin-top: 60px;
+    padding: 15px 50px; }
   .btn-block {
     margin: 10px auto;
     width: 50%; } }
 
 @media (min-width: 1200px) {
+  .footer {
+    margin-top: 60px;
+    padding: 15px 70px; }
   .btn-block {
     margin: 10px auto;
     width: 40%; } }

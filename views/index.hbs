@@ -1,3 +1,6 @@
 <h1>{{titlePage}}</h1>
 <p>Te damos la bienvenida a {{titlePage}}, la app que te permite conocer los monumentos de Madrid de una forma diferente.</p>
+{{#if loginErrorMessage}}
+<div id="errorMsg">{{loginErrorMessage}}</div>
+{{/if}}
 <p><a href="/login">Inicia sesión</a> para descubrir todos los secretos que oculta la ciudad de Madrdid</p>

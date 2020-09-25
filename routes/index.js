@@ -7,5 +7,4 @@ module.exports = app => {
   app.use("/profile", require("./profile.routes"))
   app.use("/", require('./auth.routes'))
   app.use("/api", require('./api.routes.js'))
-  app.use("/axios", require("./axios.routes.js"))
 }

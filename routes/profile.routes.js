@@ -5,10 +5,14 @@ const Activity = require("../models/activity.model")
 const Monument = require("../models/monuments.model")
 const User =require("../models/user.model")
 
-router.get("/", (req, res, next) => {
+// Middleware config for the loggin authentication 
+const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.render('index', { loginErrorMessage: 'Acceso restringido' })
+
+// The profile page
+router.get("/", checkLoggedIn, (req, res, next) => {
 
 
-    const activityPromise = Activity.find({ "owner": { $in: [req.user._id] } })
+    const activityPromise = Activity.find({ "owner": { $in: [req.user._id] } }, {"name": 1})
     const userPromise = User.findById(req.user._id).populate("monuments")
 
     Promise.all([activityPromise, userPromise])
@@ -18,22 +22,26 @@ router.get("/", (req, res, next) => {
     
 })
 
-router.get("/:monument_id", (req, res, next) => {
+//Add a monument to favorite
+router.get("/:monument_id", checkLoggedIn, (req, res, next) => {
 
     const monumentid = req.params.monument_id
     
+    //Get the monument and add
     Monument.findById(monumentid)
         .then(foundMonument => {
             const { username, pasword, role, monuments, activities } = req.user
             monuments.push(foundMonument)
 
+            //Update the data
             return User.findByIdAndUpdate(req.user._id, { username, pasword, role, monuments, activities })
         })
         .then(() => res.redirect("/profile"))
         .catch(err => console.log(err))
 })
 
-router.get("/remove/:monument_id", (req, res, next) => {
+// Remove monument from favorites
+router.get("/remove/:monument_id", checkLoggedIn, (req, res, next) => {
 
     const monumentid = req.params.monument_id
 

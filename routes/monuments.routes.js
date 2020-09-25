@@ -6,13 +6,11 @@ const Monument = require("../models/monuments.model")
 const Activity = require("../models/activity.model")
 
 // Middleware config for the loggin authentication 
-
 const checkLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.render('index', { loginErrorMessage: 'Acceso restringido' })
   
 
-
 // Search monument for area and district    
-router.get("/", (req, res, next) => {
+router.get("/", checkLoggedIn, (req, res, next) => {
 
     // Get the districts and areas of each monument
     Monument.find({}, { "address.districtURL": 1, "address.areaURL": 1 })
@@ -35,7 +33,7 @@ router.get("/", (req, res, next) => {
 })
 
 // Show the results
-router.get("/results", (req, res, next) => {
+router.get("/results", checkLoggedIn, (req, res, next) => {
 
     const district = req.query.districtQuery
     const area = req.query.areaQuery
@@ -77,14 +75,14 @@ router.get("/results", (req, res, next) => {
 
 
 // Show all monuments
-router.get("/all", (req, res, next) => {
+router.get("/all", checkLoggedIn, (req, res, next) => {
 
-    Monument.find()
+    Monument.find({},{"title": 1, "address.street": 1, "address.locality": 1})
         .then(allMonuments => res.render("monuments/monument-all", { allMonuments }))
         .catch(err => next(err))
 })
 
-router.get("/:monument_id",  (req, res, next) => {
+router.get("/:monument_id", checkLoggedIn,  (req, res, next) => {
     const monumentId = req.params.monument_id
 
     const monumentPromise = Monument.findById(monumentId)

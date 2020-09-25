@@ -1,6 +1,7 @@
 // getMonumentDataAndPlot()
 getActivityDataAndPlot()
 
+//Get the data from the model
 function getMonumentDataAndPlot() {
 
     axios.get('/api/monument/')
@@ -14,19 +15,17 @@ function getActivityDataAndPlot() {
         .catch(err => console.log('Hubo un error:', err))
 }
 
+
+// Print monument charts
 function printMonumentsCharts(data) {
-  
     districitChart(data, "districtChart")
     areaChart(data, "areaChart")
-
-
 }
 
+// Print activity charts
 function printActCharts(data) {
-
     agesChart(data, "ageChart")
     participantsChart(data, "participantsChart")
-
 }
 
 
@@ -95,7 +94,7 @@ function areaChart(monument, id) {
     new Chart(id, { type: 'line', data, options })
 }
 
-
+// Chart with the minimun and maximum ages
 function agesChart(act, id) {
     let minAge = act.map(elm => elm.minAge)
     let maxAge = act.map(elm => elm.maxAge)
@@ -114,24 +113,25 @@ function agesChart(act, id) {
         (maxAge[i] < 7) ? rangeMaxAge[0]++ : (maxAge[i] >= 7 && maxAge[i] <= 11) ? rangeMaxAge[1]++ : (maxAge[i] >= 12 && maxAge[i] <= 15) ? rangeMaxAge[2]++ : (maxAge[i] >= 16 && maxAge[i] <= 18) ? rangeMaxAge[3]++ : (maxAge[i] >= 19) ? rangeMaxAge[4]++ : null
         
     }
-    const colors = ["rgba(255, 10, 20, 0.5)", "rgba(15, 255, 10, 0.5)", "rgba(5, 20, 255, 0.5)", "rgba(181, 67, 255, 0.5)", "rgba( 255, 161, 67 , 0.5)"]
+    const colorsMin = ["rgba(255, 10, 20, 0.8)", "rgba(15, 255, 10, 0.8)", "rgba(5, 20, 255, 0.8)", "rgba(181, 67, 255, 0.8)", "rgba( 255, 161, 67 , 0.8)"]
+    const colorsMax = ["rgba(255, 10, 20, 0.4)", "rgba(15, 255, 10, 0.4)", "rgba(5, 20, 255, 0.4)", "rgba(181, 67, 255, 0.4)", "rgba( 255, 161, 67 , 0.4)"]
 
     const data = {
         labels: ["<7 años", "7-11 años", "12-15 años", "16-18 años", ">19 años"],
         datasets: [{
             label: 'Mínima',
             data: rangeMinAge,
-            backgroundColor: colors,
-            borderColor: colors,
-            borderWidth: 1
+            backgroundColor: colorsMin,
+            borderColor: colorsMin,
+            borderWidth: 4
         },
-            {
-                label: 'Máxima',
-                data: rangeMaxAge,
-                backgroundColor: colors,
-                borderColor: colors,
-                borderWidth: 1
-            }
+        {
+            label: 'Máxima',
+            data: rangeMaxAge,
+            backgroundColor: colorsMax,
+            borderColor: colorsMax,
+            borderWidth: 1
+        }
         ]
     }
     const options = {
@@ -146,14 +146,14 @@ function agesChart(act, id) {
     new Chart(id, { type: 'bar', data, options })
 }
 
+// Chart with the maximum number of participants
 function participantsChart(act, id) {
-    let minParticipants = act.map(elm => elm.minParticipants)
     let maxParticipants = act.map(elm => elm.maxParticipants)
 
-    let rangeMinParticipants = [0, 0, 0, 0]
+    let rangeMaxParticipants = [0, 0, 0, 0]
 
-    for (let i = 0; i < minParticipants.length; i++) {
-        (minParticipants[i] < 5) ? rangeMinParticipants[0]++ : (minParticipants[i] >= 6 && minParticipants[i] <= 10) ? rangeMinParticipants[1]++ : (minParticipants[i] >= 11 && minParticipants[i] <= 16) ? rangeMinParticipants[2]++ : (minParticipants[i] >= 17) ? rangeMinParticipants[3]++ : null
+    for (let i = 0; i < maxParticipants.length; i++) {
+        (maxParticipants[i] < 5) ? rangeMaxParticipants[0]++ : (maxParticipants[i] >= 6 && maxParticipants[i] <= 10) ? rangeMaxParticipants[1]++ : (maxParticipants[i] >= 11 && maxParticipants[i] <= 16) ? rangeMaxParticipants[2]++ : (maxParticipants[i] >= 17) ? rangeMaxParticipants[3]++ : null
 
     }
 
@@ -162,7 +162,7 @@ function participantsChart(act, id) {
         labels: ["<5", "6-10", "11-16", ">17"],
         datasets: [{
             label: 'Mínimo',
-            data: rangeMinParticipants,
+            data: rangeMaxParticipants,
             backgroundColor: colors,
             borderColor: colors,
             borderWidth: 1
