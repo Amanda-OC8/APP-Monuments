@@ -23,7 +23,7 @@ function drawMap(monument) {
   // define the center
   let center= {
     lat: currentMonument[0].location.coordinates[0],
-    lng: currentMonument[0].location.coordinates[1],
+    lng: currentMonument[0].location.coordinates[1]
       }
 
  //Draw the map
@@ -31,7 +31,7 @@ function drawMap(monument) {
     {
       center,
       zoom: 14,
-          }
+      styles: mapStyles.Retro    }
   )
   // Costum icon
   const icon = { url: "../images/ubicacion.png", scaledSize: new google.maps.Size(40, 40) }

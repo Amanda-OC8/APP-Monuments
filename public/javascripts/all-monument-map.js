@@ -20,7 +20,7 @@ function drawMap(monuments) {
   }
   
   // Create the map in the canvas
-  map = new google.maps.Map(document.querySelector('#all-map'), { center, zoom: 14, })
+  map = new google.maps.Map(document.querySelector('#all-map'), { center, zoom: 14, styles: mapStyles.Retro})
 
 // Create a infoWindow for each point, and a marker
   let infowindow = new google.maps.InfoWindow({})
